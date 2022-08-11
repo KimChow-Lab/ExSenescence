@@ -1,0 +1,134 @@
+Group	GroupName	GeneSymobl	MolecularName
+Group1_1	Interleukins	IL6	IL6
+Group1_1	Interleukins	IL7	IL7
+Group1_1	Interleukins	IL1A	IL1A
+Group1_1	Interleukins	IL1B	IL1B
+Group1_1	Interleukins	IL13	IL13
+Group1_1	Interleukins	IL15	IL15
+Group1_2	Chemokines	CXCL8	IL8
+Group1_2	Chemokines	CXCL1	GRO-a
+Group1_2	Chemokines	CXCL2	GRO-b
+Group1_2	Chemokines	CXCL3	GRO-c
+Group1_2	Chemokines	CCL8	MCP-2
+Group1_2	Chemokines	CCL7	MCP-3
+Group1_2	Chemokines	CCL13	MCP-4
+Group1_2	Chemokines	CCL3	MIP-1a
+Group1_2	Chemokines	CCL20	MIP-3a
+Group1_2	Chemokines	CCL16	HCC-4
+Group1_2	Chemokines	CCL11	Eotaxin
+Group1_2	Chemokines	CCL26	Eotaxin-3
+Group1_2	Chemokines	CCL25	TECK
+Group1_2	Chemokines	CXCL5	ENA-78
+Group1_2	Chemokines	CXCL6	GCP-2
+Group1_2	Chemokines	CCL1	I-309
+Group1_2	Chemokines	CXCL11	I-TAC
+Group1_2	Chemokines	CXCL12	SDF-1
+Group1_2	Chemokines	CXCL4	PF-4
+Group1_3	other inflammatory factors	CSF2	GM-CSF
+Group1_3	other inflammatory factors	CSF3	G-CSF
+Group1_3	other inflammatory factors	CSF1	M-CSF
+Group1_3	other inflammatory factors	IFNG	INF-γ
+Group1_3	other inflammatory factors	CXCL13	BLC
+Group1_3	other inflammatory factors	MIF	MIF
+Group2	Growth factor and regulators	AREG	Amphiregulin
+Group2	Growth factor and regulators	EREG	Epiregulin
+Group2	Growth factor and regulators	NRG1	Heregulin
+Group2	Growth factor and regulators	EGF	EGF
+Group2	Growth factor and regulators	FGF2	bFGF
+Group2	Growth factor and regulators	HGF	HGF
+Group2	Growth factor and regulators	FGF7	KGF(FGF7)
+Group2	Growth factor and regulators	VEGFA	VEGF
+Group2	Growth factor and regulators	ANG	Angiogenin
+Group2	Growth factor and regulators	PIGF	PIGF
+Group2	Growth factor and regulators	NGF	NGF
+Group2	Growth factor and regulators	IGFBP2	IGFBP-2
+Group2	Growth factor and regulators	IGFBP3	IGFBP-3
+Group2	Growth factor and regulators	IGFBP4	IGFBP-4
+Group2	Growth factor and regulators	IGFBP7	IGFBP-7
+Group2	Growth factor and regulators	IGFBP6	IGFBP-6
+Group3	Proteases and regulators	MMP1	MMP-1
+Group3	Proteases and regulators	MMP3	MMP-3
+Group3	Proteases and regulators	MMP10	MMp-10
+Group3	Proteases and regulators	MMP12	MMP-12
+Group3	Proteases and regulators	MMP13	MMP-13
+Group3	Proteases and regulators	MMP14	MMP-14
+Group3	Proteases and regulators	TIMP1	TIMP-1
+Group3	Proteases and regulators	TIMP2	TIMP-2
+Group3	Proteases and regulators	SERPINE1	PAI-1
+Group3	Proteases and regulators	SERPINB2	PAI-2
+Group3	Proteases and regulators	PLAT	tPA
+Group3	Proteases and regulators	PLAU	uPA
+Group3	Proteases and regulators	CTSB	Cathepsin B
+Group3_1	Apoptosis Resistance	BCL2L1	BCL-XL
+Group3_1	Apoptosis Resistance	BCL2L2	BCL-W
+Group3_1	Apoptosis Resistance	BCL2	BCL2
+Group3_1	Apoptosis Resistance	PIK3CA 	PI3 K
+Group3_1	Apoptosis Resistance	FOXO4	FOXO4
+Group3_1	Apoptosis Resistance	HSP90AB1	HSP90
+Group3_1	Composition of the Plasma Membrane	CAV1	caveolin-1
+Group4	Soluble or shed receptors or ligands	ICAM1	ICAM-1
+Group4	Soluble or shed receptors or ligands	ICAM3	ICAM-3
+Group4	Soluble or shed receptors or ligands	TNFRSF11B	OPG
+Group4	Soluble or shed receptors or ligands	TNFRSF1A	sTNFRI
+Group4	Soluble or shed receptors or ligands	TNFRSF10C	TRAIL-R3
+Group4	Soluble or shed receptors or ligands	FAS	Fas
+Group4	Soluble or shed receptors or ligands	TNFRSF1B	sTNFRII
+Group4	Soluble or shed receptors or ligands	IL6ST	SGP130
+Group4	Soluble or shed receptors or ligands	EGFR	EGF-R
+Group5_1	Insoluble factor	FN1	Fibronectin
+Group5_2	Insoluble factor	COL10A1	Collagens
+Group5_2	Insoluble factor	COL11A1	Collagens
+Group5_2	Insoluble factor	COL11A2	Collagens
+Group5_2	Insoluble factor	COL12A1	Collagens
+Group5_2	Insoluble factor	COL13A1	Collagens
+Group5_2	Insoluble factor	COL14A1	Collagens
+Group5_2	Insoluble factor	COL15A1	Collagens
+Group5_2	Insoluble factor	COL16A1	Collagens
+Group5_2	Insoluble factor	COL17A1	Collagens
+Group5_2	Insoluble factor	COL18A1	Collagens
+Group5_2	Insoluble factor	COL19A1	Collagens
+Group5_2	Insoluble factor	COL1A1	Collagens
+Group5_2	Insoluble factor	COL1A2	Collagens
+Group5_2	Insoluble factor	COL20A1	Collagens
+Group5_2	Insoluble factor	COL21A1	Collagens
+Group5_2	Insoluble factor	COL22A1	Collagens
+Group5_2	Insoluble factor	COL23A1	Collagens
+Group5_2	Insoluble factor	COL24A1	Collagens
+Group5_2	Insoluble factor	COL25A1	Collagens
+Group5_2	Insoluble factor	COL26A1	Collagens
+Group5_2	Insoluble factor	COL27A1	Collagens
+Group5_2	Insoluble factor	COL28A1	Collagens
+Group5_2	Insoluble factor	COL2A1	Collagens
+Group5_2	Insoluble factor	COL3A1	Collagens
+Group5_2	Insoluble factor	COL4A1	Collagens
+Group5_2	Insoluble factor	COL4A2	Collagens
+Group5_2	Insoluble factor	COL4A3	Collagens
+Group5_2	Insoluble factor	COL4A4	Collagens
+Group5_2	Insoluble factor	COL4A5	Collagens
+Group5_2	Insoluble factor	COL4A6	Collagens
+Group5_2	Insoluble factor	COL5A1	Collagens
+Group5_2	Insoluble factor	COL5A2	Collagens
+Group5_2	Insoluble factor	COL5A3	Collagens
+Group5_2	Insoluble factor	COL6A1	Collagens
+Group5_2	Insoluble factor	COL6A2	Collagens
+Group5_2	Insoluble factor	COL6A3	Collagens
+Group5_2	Insoluble factor	COL6A5	Collagens
+Group5_2	Insoluble factor	COL6A6	Collagens
+Group5_2	Insoluble factor	COL7A1	Collagens
+Group5_2	Insoluble factor	COL8A1	Collagens
+Group5_2	Insoluble factor	COL8A2	Collagens
+Group5_2	Insoluble factor	COL9A1	Collagens
+Group5_2	Insoluble factor	COL9A2	Collagens
+Group5_2	Insoluble factor	COL9A3	Collagens
+Group5_3	Insoluble factor	LAMA1	Laminin
+Group5_3	Insoluble factor	LAMA2	Laminin
+Group5_3	Insoluble factor	LAMA3	Laminin
+Group5_3	Insoluble factor	LAMA4	Laminin
+Group5_3	Insoluble factor	LAMA5	Laminin
+Group5_3	Insoluble factor	LAMB1	Laminin
+Group5_3	Insoluble factor	LAMB2	Laminin
+Group5_3	Insoluble factor	LAMB3	Laminin
+Group5_3	Insoluble factor	LAMB4	Laminin
+Group5_3	Insoluble factor	LAMC1	Laminin
+Group5_3	Insoluble factor	LAMC2	Laminin
+Group5_3	Insoluble factor	LAMC3	Laminin
