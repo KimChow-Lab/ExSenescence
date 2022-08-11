@@ -1,7 +1,12 @@
+library(Seurat)
+library(ggplot2)
+library(DoubletFinder)
+library(dplyr)
+library(clustree)
+
 #######################################################################################
 ##############         Preprocessing snRNA from Lau et al,                  ###########
 #######################################################################################
-library(DoubletFinder)
 setwd("/Projects/deng/Alzheimer/Lau/data/Sample/") #samples were downloaded from https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE157827
 fileList <- dir()
 list.Object <- lapply(fileList, FUN = function(x){
@@ -39,7 +44,7 @@ LauAD<- FindClusters(LauAD, resolution = 0.5)
 #FeaturePlot(LauAD,features=c("CLDN5","FLT1","ABCB1","EBF1"))
 saveRDS(LauAD8Author, file="../mergeWithSampleBatchExisted.Rds")
 
-#--------------divide the whole dataset into control and alzheimer group---------------------
+#------------Integrated phenotype---------------------
 setwd("/Projects/deng/Alzheimer/syn18485175/cellCycle/LauAllData")
 LauAD=readRDS("/Projects/deng/Alzheimer/Lau/data/mergeWithSampleExisted.Rds")
 SampleInfo=read.table("/Projects/deng/Alzheimer/Lau/sampleInfo.txt",header=T,sep="\t") 
@@ -55,7 +60,7 @@ pdf("LauADDimPlot.pdf")
 DimPlot(LauAD, label=TRUE)&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 pdf("LauADMarkerFeaturePlot.pdf") #Mapping cells to known cell types using privous validated markers
-FeaturePlot(LauAD,c("NRGN","GAD1","AQP4","MBP","CD74","VCAN","FLT1","SLC6A1"))&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+FeaturePlot(LauAD,c("NRGN","MBP","GAD1","AQP4","VCAN","CSF1R","FLT1"))&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 LauAD.markers <- FindAllMarkers(LauAD, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25) #Double checked the cell types by their marker genes
 LauAD.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_log2FC) -> top5
@@ -69,7 +74,7 @@ LauAllCtrl<- RunTSNE(LauAllCtrl, reduction = "pca", dims = 1:30)
 LauAllCtrl<- FindNeighbors(LauAllCtrl, reduction = "pca", dims = 1:30)
 LauAllCtrl<- FindClusters(LauAllCtrl, resolution = 0.5)
 pdf("Control/LauAllCtrlMarkerFeaturePlot.pdf")
-FeaturePlot(LauAllCtrl,reduction="tsne",features=c("NRGN","GAD1","AQP4","MBP","CD74","VCAN","FLT1","SLC6A1"))&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+FeaturePlot(LauAllCtrl,reduction="tsne",features=c("NRGN","MBP","GAD1","AQP4","VCAN","CSF1R","FLT1"))&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 pdf("Control/LauAllCtrlDimPlot.pdf")
 DimPlot(LauAllCtrl, reduction="tsne",label=TRUE)&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
@@ -79,10 +84,10 @@ new.cluster.ids <- names
 names(new.cluster.ids) <- levels(LauAllCtrl)
 LauAllCtrl <- RenameIdents(LauAllCtrl, new.cluster.ids)
 LauAllCtrl$cellType=Idents(LauAllCtrl)
-pdf("tmp/LauAllCtrlcellType.pdf")
+pdf("Control/LauAllCtrlcellType.pdf")
 TSNEPlot(LauAllCtrl, label=TRUE,group.by="cellType")&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
-pdf("tmp/LauAllCtrlcellType8UMAP.pdf")
+pdf("Control/LauAllCtrlcellType8UMAP.pdf")
 DimPlot(LauAllCtrl, label=TRUE)&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 saveRDS(LauAllCtrl,file="/Projects/deng/Alzheimer/syn18485175/cellCycle/LauAllData/LauAllCtrl.rds")
@@ -92,10 +97,10 @@ LauAllAD=subset(LauAD,CONDITION %in% "Alzheimer")
 LauAllAD<- RunTSNE(LauAllAD, reduction = "pca", dims = 1:30)
 LauAllAD<- FindNeighbors(LauAllAD, reduction = "pca", dims = 1:30)
 LauAllAD<- FindClusters(LauAllAD, resolution = 0.5)
-pdf("tmp/LauAllADMarkerFeaturePlot.pdf")
-FeaturePlot(LauAllAD,reduction="tsne",features=c("NRGN","GAD1","AQP4","MBP","CD74","VCAN","FLT1","SLC6A1"))&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+pdf("Alzheimer/LauAllADMarkerFeaturePlot.pdf")
+FeaturePlot(LauAllAD,reduction="tsne",features=c("NRGN","MBP","GAD1","AQP4","VCAN","CSF1R","FLT1"))&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
-pdf("tmp/LauAllADDimPlot.pdf")
+pdf("Alzheimer/LauAllADDimPlot.pdf")
 DimPlot(LauAllAD, reduction="tsne",label=TRUE)&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 names=c("Ex","Oli","Ast","Opc","Oli","In","Ex","Mic","Ex","In","Oli","Ex","Ex","In","Ast","End","In","Ex","Ex","Ex","Ex","In","Ex","End","Oli","Ex","Opc")
@@ -103,15 +108,15 @@ new.cluster.ids <- names
 names(new.cluster.ids) <- levels(LauAllAD)
 LauAllAD <- RenameIdents(LauAllAD, new.cluster.ids)
 LauAllAD$cellType=Idents(LauAllAD)
-pdf("tmp/LauAllADcellType.pdf")
+pdf("Alzheimer/LauAllADcellType.pdf")
 TSNEPlot(LauAllAD, label=TRUE,group.by="cellType")&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
-pdf("tmp/LauAllADcellType8UMAP.pdf")
+pdf("Alzheimer/LauAllADcellType8UMAP.pdf")
 DimPlot(LauAllAD, label=TRUE)&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 saveRDS(LauAllAD,file="/Projects/deng/Alzheimer/syn18485175/cellCycle/LauAllData/LauAllAD.rds")
 
-#--------Extract the Ex from all the Lau et,al. dataset and add the cell cycle score-----------------
+#--------Extract the Ex from all the Lau et,al. dataset-----------------
 Ex=subset(LauAD,idents=c(2,3,7,8,11,14,16,18,19,22))
 Ex <- Ex[!grepl("^MT-", rownames(Ex)), ]
 Ex<- RunTSNE(Ex, reduction = "pca", dims = 1:30)
@@ -121,36 +126,40 @@ saveRDS(ExCycle,file="/Projects/deng/Alzheimer/syn18485175/cellCycle/LauAllData/
 
 
 
-
 #######################################################################################
 ##############         Preprocessing snRNA from Mathy et al.    #######################
 #######################################################################################
 setwd("/Projects/deng/Alzheimer/syn18485175")
 data <- Read10X(data.dir = "data/") #data were downloaded from https://www.synapse.org/#!Synapse:syn18485175
-AD <- CreateSeuratObject(counts = data, project = "AD")
-AD <- NormalizeData(AD, normalization.method = "LogNormalize", scale.factor = 10000)
-AD <- FindVariableFeatures(AD, selection.method = "vst", nfeatures = 2000)
-all.genes <- rownames(AD)
-AD <- ScaleData(AD, features = all.genes)
-AD <- RunPCA(AD, features = VariableFeatures(object = AD))
-DimHeatmap(AD , dims = 20:45, cells = 500, balanced = TRUE)
-ElbowPlot(AD,ndims = 50)
+MathyAll <- CreateSeuratObject(counts = data, project = "MathyAD")
+MathyAll <- NormalizeData(MathyAll, normalization.method = "LogNormalize", scale.factor = 10000)
+MathyAll <- FindVariableFeatures(MathyAll, selection.method = "vst", nfeatures = 2000)
+all.genes <- rownames(MathyAll)
+MathyAll <- ScaleData(MathyAll, features = all.genes)
+MathyAll <- RunPCA(MathyAll, features = VariableFeatures(object = MathyAll))
+DimHeatmap(MathyAll , dims = 20:45, cells = 500, balanced = TRUE)
+ElbowPlot(MathyAll,ndims = 50)
 # t-SNE and Clustering
-AD<- RunUMAP(AD, reduction = "pca", dims = 1:30)
-AD<- FindNeighbors(AD, reduction = "pca", dims = 1:30)
-AD<- FindClusters(AD, resolution = 0.5)
-saveRDS(AD,file="/Projects/deng/Alzheimer/syn18485175/AD.rds")
+MathyAll<- RunUMAP(MathyAll, reduction = "pca", dims = 1:30)
+MathyAll<- FindNeighbors(MathyAll, reduction = "pca", dims = 1:30)
+MathyAll<- FindClusters(MathyAll, resolution = 0.5)
+saveRDS(MathyAll,file="/Projects/deng/Alzheimer/syn18485175/MathyAll.rds")
 
-library(Seurat)
-library(ggplot2)
-library(clustree)
-setwd("/Projects/deng/Alzheimer/syn18485175/cellCycle/MathyAllData")
-AD=readRDS("/Projects/deng/Alzheimer/syn18485175/AD.rds")
+
 Info=read.table("/Projects/deng/Alzheimer/syn18485175/Phenotype4Cell.txt",header=TRUE,row.names=1,sep="\t")
-AD$Gender=Info$Gender
-AD$Age=Info$age_death
-AD=subset(AD,idents=c(0:21))
-Ex=subset(AD,OldCellType %in% c("Ex"))
+MathyAll$Gender=Info$Gender
+MathyAll$Age=Info$age_death
+MathyAll=subset(MathyAll,idents=c(0:21))
+
+MathyAllCtrl=subset(MathyAll,Statues %in% "Control")
+MathyAllCtrl <- RunTSNE(MathyAllCtrl, dims = 1:30)
+saveRDS(MathyAllCtrl,"/Projects/deng/Aging/Ex/MathyEx/MathyAllCtrl.rds")
+MathyAllAD=subset(MathyAll,Statues %in% "Alzheimer")
+MathyAllAD <- RunTSNE(MathyAllAD, dims = 1:30)
+saveRDS(MathyAllAD,"/Projects/deng/Aging/Ex/MathyEx/MathyAllAD.rds")
+
+
+Ex=subset(MathyAll,OldCellType %in% c("Ex"))
 pdf("ExElbowPlot.pdf")
 ElbowPlot(Ex,ndims = 50)
 dev.off()
@@ -159,14 +168,7 @@ Ex<- RunTSNE(Ex, reduction = "pca", dims = 1:30)
 Ex<- FindNeighbors(Ex, reduction = "pca", dims = 1:30)
 Ex<- FindClusters(Ex, resolution = 0.1) #label 4
 
-pdf("labelR0.1Ctrl.pdf")
-DimPlot(Ex, label=TRUE,reduction="tsne")&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
-dev.off()
-Ex.markers <- FindAllMarkers(Ex, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
-Ex.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_log2FC) -> top5
-DoHeatmap(Ex, features = top5$gene) + NoLegend()
 saveRDS(Ex,file="/Projects/deng/Alzheimer/syn18485175/cellCycle/MathyAllData/AllEx8Mathy.rds")
-
 
 #######################################################################################
 ##############         Preprocessing snRNA from Yang et al.     #######################
@@ -224,13 +226,13 @@ pdf("COVID19CtrlCellType.pdf",width=10,height=9)
 DimPlot(COVID19Ctrl, label=TRUE,reduction="tsne")&theme(panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 
-saveRDS(COVID19,file="/Projects/deng/Aging/Ex/Yang_GSE159812/YangCOVID19.rds")
-Ex=subset(COVID19,idents=c("2","15","17","18","19","20","22"))
+saveRDS(COVID19,file="/Projects/deng/Aging/Ex/Yang_GSE159812/COVID19Ctrl.rds")
 
+
+Ex=subset(COVID19,idents=c("2","15","17","18","19","20","22"))
 pdf("COVID19ExLabelInitial.pdf",width=9)
 DimPlot(Ex, label=TRUE)&theme(panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
-
 Ex <- NormalizeData(Ex, normalization.method = "LogNormalize", scale.factor = 10000)
 Ex <- FindVariableFeatures(Ex, selection.method = "vst", nfeatures = 2000)
 all.genes <- rownames(Ex)
@@ -314,10 +316,6 @@ dev.off()
 saveRDS(NagyAllCtrl,file="/Projects/deng/Aging/Ex/Nagy_GSE144136/MDDCtrl.rds")
 
 Ex=subset(MDD,orig.ident %in% "Ex")
-pdf("ExLabelInitial.pdf",width=9)
-DimPlot(Ex, reduction="tsne",label=TRUE)&theme(panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
-dev.off()
-
 Ex <- NormalizeData(Ex, normalization.method = "LogNormalize", scale.factor = 10000)
 Ex <- FindVariableFeatures(Ex, selection.method = "vst", nfeatures = 2000)
 all.genes <- rownames(Ex)
@@ -344,3 +342,49 @@ DimPlot(Ex, reduction = "tsne", group.by="sampleID")&theme(panel.border = elemen
 dev.off()
 
 saveRDS(Ex,file="/Projects/deng/Aging/Ex/Nagy_GSE144136/NagyEx.rds")
+
+
+
+#######################################################################################
+##############        cell type visualization for each datast   #######################
+#######################################################################################
+#-----Figure S2A, Figure S8A--------------------
+MathyAllCtrl=readRDS("/Projects/deng/Aging/Ex/MathyEx/MathyAllCtrl.rds")
+NagyAllCtrl=readRDS("/Projects/deng/Aging/Ex/Nagy_GSE144136/MDDCtrl.rds")
+YangAllCtrl=readRDS("/Projects/deng/Aging/Ex/Yang_GSE159812/COVID19Ctrl.rds")
+LauAllCtrl=readRDS("/Projects/deng/Alzheimer/syn18485175/cellCycle/LauAllData/LauAllCtrl.rds")
+LauAllAD=readRDS("/Projects/deng/Alzheimer/syn18485175/cellCycle/LauAllData/LauAllAD.rds")
+MathyAllAD=readRDS("/Projects/deng/Aging/Ex/MathyEx/MathyAllAD.rds")
+
+Idents(MathyAllCtrl)=factor(MathyAllCtrl$OldCellType,levels=c("Ex","Oli","In","Ast","Opc","Mic","End","Per"))
+tiff("MathyAllCtrl.CellType.tiff",width=280,height=200)
+DimPlot(MathyAllCtrl, reduction = "tsne")&theme(plot.title=element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+
+Idents(NagyAllCtrl)=NagyAllCtrl$cellType
+Idents(NagyAllCtrl)=factor(Idents(NagyAllCtrl),levels=c("Ex","Oli","In","Ast","Opc","Mic","Endo","Mix"))
+NagyAllCtrl=subset(NagyAllCtrl,cellType %in% c("Ex","Oli","In","Ast","Opc","Mic","Endo"))
+tiff("NagyAllCtrl.CellType.tiff",width=280,height=200)
+DimPlot(NagyAllCtrl, reduction = "tsne")&theme(plot.title=element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+
+Idents(YangAllCtrl)=factor(Idents(YangAllCtrl),levels=c("Ex","Oli","In","Ast","Opc","Mic","End"))
+tiff("YangAllCtrl.CellType.tiff",width=280,height=200)
+DimPlot(YangAllCtrl, reduction = "tsne")&theme(plot.title=element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+
+Idents(LauAllCtrl)=factor(Idents(LauAllCtrl),levels=c("Ex","Oli","In","Ast","Opc","Mic","End"))
+tiff("LauAllCtrl.CellType.tiff",width=280,height=200)
+DimPlot(LauAllCtrl, reduction = "tsne")&theme(plot.title=element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+
+Idents(LauAllAD)=factor(Idents(LauAllAD),levels=c("Ex","Oli","In","Ast","Opc","Mic","End"))
+tiff("LauAllAD.CellType.tiff",width=280,height=200)
+DimPlot(LauAllAD, reduction = "tsne")&theme(plot.title=element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+
+Idents(MathyAllAD)=factor(MathyAllAD$OldCellType,levels=c("Ex","Oli","In","Ast","Opc","Mic","End","Per"))
+tiff("MathyAllAD.CellType.tiff",width=280,height=200)
+DimPlot(MathyAllAD, reduction = "tsne")&theme(plot.title=element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+
