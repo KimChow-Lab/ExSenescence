@@ -1,2 +1,2 @@
 # ExSenescence
-Analysis code and documentation for "Ex senescence mediated by cell cycle re-entry".
+Analysis codes and documentations for "Unmasking the heterogeneities in transcriptomic and evolutionary trajectories of cell cycle re-engaging post-mitotic neurons".
