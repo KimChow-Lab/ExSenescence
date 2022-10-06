@@ -1,7 +1,7 @@
 library(Seurat)
 library(ggplot2)
 
-setwd("/Projects/deng/Aging/DANeuron/Kamath_GSE178265")
+setwd("DANeuron/Kamath_GSE178265")
 GSE178265.data <- Read10X(data.dir = "rawData/")
 
 MetaData=read.table("rawData/METADATA_PD.tsv",header=T,row.names=1) #https://singlecell.broadinstitute.org/single_cell/study/SCP1768/single-cell-genomic-profiling-of-human-dopamine-neurons-identifies-a-population-that-selectively-degenerates-in-parkinsons-disease-single-nuclei-data#study-download
@@ -81,7 +81,7 @@ DimPlot(DANeuron.integrated,split.by="Group",reduction="tsne")&theme(panel.borde
 dev.off()
 
 
-CCGene=read.table("/Projects/deng/Aging/Ex/cellCycleGene/CCGeneCombine.txt",header=T,sep="\t") #711
+CCGene=read.table("cellCycleGene/CCGeneCombine.txt",header=T,sep="\t") #711
 DefaultAssay(DANeuron.integrated)="RNA"
 genes=intersect(rownames(DANeuron.integrated),CCGene$NAME)
 length(genes) #364
@@ -98,7 +98,7 @@ VlnPlot(DANeuron.integrated,c("G1.S1","S.phase5","G22","G2.M3","M.G14"),ncol=1,p
 dev.off()
 
 
-coreCellularGene=read.table("/Projects/deng/Aging/DANeuron/Kamath_GSE178265/55markersBySegura.txt",header=T)
+coreCellularGene=read.table("DANeuron/Kamath_GSE178265/55markersBySegura.txt",header=T)
 DefaultAssay(DANeuron.integrated)="RNA"
 DANeuronExpr <- AverageExpression(DANeuron.integrated)[["RNA"]]
 hclust=hclust(as.dist(1-cor(DANeuronExpr)),method="ward.D2")
