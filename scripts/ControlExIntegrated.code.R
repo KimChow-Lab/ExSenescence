@@ -131,7 +131,8 @@ dev.off()
 #######################################################################################
 ##############   phenotype visualization      #############
 #######################################################################################
-
+setwd("/Projects/deng/Aging/Ex/AllControlEx")
+ExCtrl.integrated=readRDS("ExCtrl.integrated.rds")
 #Figure S2B
 tiff("ExCtrl.integratedLabel.tiff",width=350,height=270)
 DimPlot(ExCtrl.integrated, raster=FALSE,reduction = "tsne")&theme(axis.title.x = element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
@@ -139,6 +140,10 @@ dev.off()
 #Figure S2C
 tiff("ExCtrl.integratedSource.tiff",width=500,height=540)
 DimPlot(ExCtrl.integrated, raster=FALSE,reduction = "tsne",split.by="Source",ncol=2)&NoLegend()&theme(axis.title.x = element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+#Figure S2C
+tiff("ExCtrl.integratedGroupSource.tiff",width=900,height=800)
+DimPlot(ExCtrl.integrated, pt.size =0.5,raster=FALSE,reduction = "tsne",group.by="Source")&theme(axis.title.x = element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 
 #Figure S2D
@@ -157,6 +162,24 @@ g=ggplot(result, aes(ClusterList, Count, fill=Source)) +
 pdf("SourceDistribution.pdf",height=2.5,width=8)
 print(g)
 dev.off()
+
+ExCtrl.integrated$geneCount=ExCtrl.integrated$nCount_RNA/1000
+pdf("ExCtrl.integrated.nCount_RNA.pdf",width=12,height=4)
+VlnPlot(ExCtrl.integrated,features=c("geneCount"),ncol=1,pt.size=0)&theme(plot.title=element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+
+ExCtrl.integrated$geneNumber=ExCtrl.integrated$nFeature_RNA/1000
+pdf("ExCtrl.integrated.nCount_RNA.pdf",width=12,height=4)
+VlnPlot(ExCtrl.integrated,features=c("geneNumber"),ncol=1,pt.size=0)&theme(plot.title=element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+
+metaData=ExCtrl.integrated@meta.data
+geneCount <- metaData %>%
+          group_by(seurat_clusters) %>%
+          summarize(mean=mean(nCount_RNA))
+geneNumber <- metaData %>%
+          group_by(seurat_clusters) %>%
+          summarize(mean=mean(nFeature_RNA))
 
 
 #Figure S2E
@@ -182,8 +205,97 @@ pdf("ExCtrl.integrated.cellCycleScore.pdf",width=6)
 VlnPlot(ExCtrl.integrated,c("G1.S1","S.phase5","G22","G2.M3","M.G14"),ncol=1,pt.size=0)&theme(plot.title=element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 
+cluster=c(0:14)
+CycleScore=ExCtrl.integrated@meta.data[,c("seurat_clusters","G1.S1","S.phase5","G22","G2.M3","M.G14")]
+PvalueBetCluster=matrix(data = NA, nrow = length(cluster), ncol = length(cluster), dimnames = list(cluster, cluster))
+for(i in 1:length(cluster)){
+  for( j in 1:length(cluster)){
+    C1_score=CycleScore[CycleScore$seurat_clusters==cluster[i],"M.G14"]
+    C2_score=CycleScore[CycleScore$seurat_clusters==cluster[j],"M.G14"]
+    delta=mean(C1_score)-mean(C2_score) #the row represent the current cluster
+    pval=wilcox.test(C1_score,C2_score)$p.value
+    PvalueBetCluster[i,j]=delta*(-log10(pval))/abs(delta)
+    if(pval==0){
+        PvalueBetCluster[i,j]=500;
+    }
+    if(i==j||delta<0){
+      PvalueBetCluster[i,j]=0;
+    }
+  }
+}
+PvalueBetCluster=data.frame(PvalueBetCluster,check.names=F)
+PvalueBetCluster$Cluster=as.character(rownames(PvalueBetCluster))
+PvalueBetCluster.df=reshape2::melt(PvalueBetCluster,id=(length(cluster)+1))
+PvalueBetCluster.df$Cluster=factor(PvalueBetCluster.df$Cluster,levels=cluster)
+t=ggplot(PvalueBetCluster.df, aes(x=Cluster, y=value, color=Cluster))+
+geom_boxplot(outlier.shape = NA,outlier.colour=NA)+labs(title="",x="", y = "")+
+geom_jitter(size=1)+
+theme_classic()+
+theme(legend.position="none")+
+theme(axis.title.y = element_text(size=rel(1.0)),axis.text.x = element_text(size=rel(1.0)),axis.text.y = element_text(size=rel(1.0)))
+pdf("IntegratedCtrlCells_Phase_PvalueDis/MathyCtrlCells_MG1_PvalueDis.pdf",height=2,width=6)
+print(t)
+dev.off()
 
 
+
+#https://www.nature.com/articles/nrm3629
+# Exrepssion of cell cycle assocaited genes
+cellCycleGene=c("CCND1","CCND2","CCND3","CDK4","CDK6","CCNE1","CDK2","CCNA1","CCNA2","CCNB1","CDK1","CDKN1A","CDKN1B","CDKN2A","CDKN2B","CDKN2C","ATR","ATM","CHEK1","CHEK2")
+t=DotPlot(subset(ExCtrl,ident=c(0:5)),features=cellCycleGene)
+result=t$data
+g=ggplot(result, aes(id, factor(features.plot,levels=rev(cellCycleGene)), size= pct.exp,color=avg.exp.scaled)) +geom_point(alpha = 0.9)+
+scale_colour_viridis_c()+
+labs(color="avg.exp.scaled",size="pct.exp",x="",y="",title="")+
+theme_bw()+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(angle=90,vjust=1,hjust=1),axis.text.y = element_text(size=rel(1.0))) 
+pdf("CellCycleGene.pdf",width=4,height=5)
+print(g)
+dev.off()
+
+gene=c("ATR","ATM","CHEK1","CHEK2")
+t=DotPlot(subset(ExCtrl,ident=c(0:5)),features=gene)
+result=t$data
+g=ggplot(result, aes(id, factor(features.plot,levels=rev(gene)), size= pct.exp,color=avg.exp.scaled)) +geom_point(alpha = 0.9)+
+scale_colour_viridis_c()+
+labs(color="avg.exp.scaled",size="pct.exp",x="",y="",title="")+
+theme_bw()+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(angle=90,vjust=1,hjust=1),axis.text.y = element_text(size=rel(1.0))) 
+pdf("ATM.pdf",width=4,height=2)
+print(g)
+dev.off()
+
+gene=c("CCND1","CCND2","CCND3","CDK4","CDK6","CCNE1","CDK2","CCNA1","CCNA2","CCNB1","CDK1")
+t=DotPlot(subset(ExCtrl,ident=c(0:5)),features=c())
+result=t$data
+g=ggplot(result, aes(id, factor(features.plot,levels=rev(gene)), size= pct.exp,color=avg.exp.scaled)) +geom_point(alpha = 0.9)+
+scale_colour_viridis_c()+
+labs(color="avg.exp.scaled",size="pct.exp",x="",y="",title="")+
+theme_bw()+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(angle=90,vjust=1,hjust=1),axis.text.y = element_text(size=rel(1.0))) 
+pdf("cellCycle.pdf",width=4,height=3)
+print(g)
+dev.off()
+
+gene=c("CDKN1A","CDKN1B","CDKN2A","CDKN2B","CDKN2C")
+t=DotPlot(subset(ExCtrl,ident=c(0:5)),features=gene)
+result=t$data
+g=ggplot(result, aes(id, factor(features.plot,levels=rev(gene)), size= pct.exp,color=avg.exp.scaled)) +geom_point(alpha = 0.9)+
+scale_colour_viridis_c()+
+labs(color="avg.exp.scaled",size="pct.exp",x="",y="",title="")+
+theme_bw()+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(angle=90,vjust=1,hjust=1),axis.text.y = element_text(size=rel(1.0))) 
+pdf("CDKN.pdf",width=4,height=2)
+print(g)
+dev.off()
+ 
+#https://www.nature.com/articles/nrm3629 #23877564
+cellCycleTFs=c("E2F1","E2F2","E2F3","E2F4","E2F5","E2F6","E2F7","E2F8","RB1","RBL1","RBL2")
+t=DotPlot(subset(ExCtrl,ident=c(0:5)),features=cellCycleTFs)
+result=t$data
+g=ggplot(result, aes(id, factor(features.plot,levels=rev(cellCycleTFs)), size= pct.exp,color=avg.exp.scaled)) +geom_point(alpha = 0.9)+
+scale_colour_viridis_c()+
+labs(color="avg.exp.scaled",size="pct.exp",x="",y="",title="")+
+theme_bw()+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(angle=90,vjust=1,hjust=1),axis.text.y = element_text(size=rel(1.0))) 
+pdf("cellCycleTFs.pdf",width=4,height=3)
+print(g)
+dev.off()
 #######################################################################################
 ##############         Expression of DNA damage associated genes          #############
 #######################################################################################
@@ -221,7 +333,6 @@ pdf("SignatureCellularGene.pdf",width=10,height=4)
 print(g)
 dev.off()
 
-
 #Figure 2E
 ExSmall <- ExCtrl.integrated[, sample(colnames(ExCtrl.integrated), size = 10000, replace=F)]
 DefaultAssay(ExSmall)="RNA"
@@ -239,7 +350,6 @@ fgsea_sets=list("ReacomeSeneGene"=fgsea_sets$REACTOME_CELLULAR_SENESCENCE)
 
 geneList=read.table("/Projects/deng/Aging/Ex/AllEx/Senescence/hsa04218_gene.txt",sep="\t") #hsa04218
 fgsea_sets=list("KEGGSeneGene"=geneList[,2])
-
 
 cluster="3"
 clusterCell<- ExExpr8DotPlot %>% dplyr::filter(id == cluster) %>% arrange(desc(avg.exp.scaled)) %>% dplyr::select(features.plot, avg.exp.scaled)
@@ -277,7 +387,7 @@ result=t$data
 C3=result[result$id==3,]
 C3=C3[order(C3$pct.exp,decreasing=T),]
 geneOrder=C3$features.plot
-g=ggplot(result, aes(factor(features.plot,levels=unique(geneOrder)),factor(id,levels=order), size= pct.exp,color=avg.exp.scaled)) +geom_point()+
+g=ggplot(result, aes(factor(features.plot,levels=unique(geneOrder)),id, size= pct.exp,color=avg.exp.scaled)) +geom_point()+
 scale_color_gradient2(midpoint=0, low="blue", mid="white",high="red")+
 labs(color="Average",size="Percent",x="",y="",title="")+
 theme_bw()+theme(title = element_text(size=rel(1.0),face="bold"),axis.text.x = element_text(size=rel(1.0),face="bold",angle=90),axis.text.y = element_text(size=rel(1.0),face="bold")) 
@@ -291,16 +401,64 @@ dev.off()
 SASPmarker=read.table("/Projects/deng/Aging/Ex/AllEx/Senescence/SASPmarker.txt",header=T,sep="\t")
 t=DotPlot(ExCtrl,features=SASPmarker$GeneSymobl)
 result=merge(t$data,SASPmarker,by.x="features.plot",by.y="GeneSymobl")
-C5=result[result$id==0,]
-C5=C5[order(C5$Group,C5$pct.exp),]
-geneOrder=C5$features.plot
+C3=result[result$id==3,]
+C3=C3[order(C3$pct.exp),]
+geneOrder=C3$features.plot
 #result=result[result$id %in% c(2:6),]
-g=ggplot(result, aes(factor(features.plot,levels=unique(rev(geneOrder))), factor(id,levels=order), size= pct.exp,color=avg.exp.scaled)) +geom_point(alpha = 0.9)+
+result$Group=ifelse(result$Group%in%c("Group5_1","Group5_2","Group5_3"),"Group5",result$Group)
+g=ggplot(result, aes(factor(features.plot,levels=rev(geneOrder)), id, size= pct.exp,color=avg.exp.scaled)) +
+geom_point(alpha = 0.9)+
 scale_colour_viridis_c()+
-labs(color="Average",size="Percent",x="",y="",title="")+
-theme_bw()+theme(title = element_text(size=rel(1.0),face="bold"),axis.text.x = element_text(face="bold",angle=90),axis.text.y = element_text(size=rel(1.0),face="bold")) 
-pdf("SASPmarkerGene.pdf",width=15,height=4)
+labs(color="avg.exp.scaled",size="pct.exp",x="",y="",title="")+
+theme_bw()+
+facet_grid(~Group, scale="free_x",space = "free")+
+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(face="bold",angle=90,vjust=0.5,hjust=1),axis.text.y = element_text(size=rel(1.0))) 
+pdf("SASPmarkerGene.pdf",width=22,height=4)
 print(g)
 dev.off()
 
 
+
+#---revise--------
+setwd("/Projects/deng/Aging/Ex/AllControlEx/Senescence")
+ExCtrl=readRDS("/Projects/deng/Aging/Ex/AllControlEx/ExCtrl.integrated.rds")
+pdf("ExCtrlMarker.pdf",width=10,height=8)
+FeaturePlot(ExCtrl,c("RBFOX3","NRGN","GAD1","AQP4","MBP","CD74","VCAN","FLT1","SLC6A1"))&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+DefaultAssay(ExCtrl)="RNA"
+ExSmall <- ExCtrl[, sample(colnames(ExCtrl), size = 10000, replace=F)]
+t=DotPlot(ExSmall,features=rownames(ExSmall))
+ExExpr8DotPlot=na.omit(t$data)
+
+CSFromSegura=read.table("SenescenceAssociatedGeneList/55markersBySegura.txt",header=T)
+CSFromCellAge=read.table("SenescenceAssociatedGeneList/GeneListFromCellAge.txt",header=T)
+CSFromCellAge$Group="CSFromCellAge"
+CSFromGabrielCasella=read.table("SenescenceAssociatedGeneList/ConservedGene8GabrielCasella.txt",header=T)
+CSFromBinZhang=read.table("SenescenceAssociatedGeneList/Senescence8BinZhang.txt",header=T)
+CSFromBinZhang$Group="CSFromBinZhang"
+CSFromKEGG=read.table("SenescenceAssociatedGeneList/hsa04218_gene.txt",header=T)
+CSFromReactome=read.table("SenescenceAssociatedGeneList/R-HSA-2559582_gene.txt",header=T)
+SASPFromSenMayo=read.table("SenescenceAssociatedGeneList/SenMayoList.txt",header=T)
+
+CombineCSList=rbind(CSFromSegura,CSFromCellAge,CSFromGabrielCasella,CSFromBinZhang,CSFromKEGG,CSFromReactome,SASPFromSenMayo)
+CombineCSList=CombineCSList[CombineCSList$GeneSymbol%in%ExExpr8DotPlot$features.plot,]
+CombineCSList=split(CombineCSList$GeneSymbol,CombineCSList$Group)
+cluster="3"
+clusterCell<- ExExpr8DotPlot %>% dplyr::filter(id == cluster) %>% arrange(desc(avg.exp.scaled)) %>% dplyr::select(features.plot, avg.exp.scaled)
+ranks<- deframe(clusterCell)
+fgseaRes<- fgseaMultilevel(CombineCSList, stats = ranks,eps=0)
+ranks=na.omit(ranks)
+fgseaRes=fgseaRes[order(fgseaRes$NES,decreasing=T),]
+
+pdf("CSGeneList8fgsea.pdf",width=10,height=5)
+plotGseaTable(CombineCSList[fgseaRes$pathway], ranks, fgseaRes, gseaParam=3)
+dev.off()
+
+p<-ggplot(data=fgseaRes, aes(x=factor(pathway,levels=rev(pathway)), y=-log10(pval),fill=-log10(pval))) +
+  scale_fill_gradient(low = "MistyRose", high = "red")+ theme_bw()+
+  geom_bar(stat="identity",width=0.6)+coord_flip()
+pdf("CSGeneList8fgseaPvalue.pdf",width=5,height=5)
+print(p)
+dev.off()
+
+fwrite(fgseaRes, file="CSGeneList8fgsea.txt", sep="\t", sep2=c("", " ", ""))
