@@ -1,7 +1,7 @@
 library(Seurat)
 library(ggplot2)
 
-setwd("DANeuron/Kamath_GSE178265")
+setwd("/Projects/deng/Aging/DANeuron/Kamath_GSE178265")
 GSE178265.data <- Read10X(data.dir = "rawData/")
 
 MetaData=read.table("rawData/METADATA_PD.tsv",header=T,row.names=1) #https://singlecell.broadinstitute.org/single_cell/study/SCP1768/single-cell-genomic-profiling-of-human-dopamine-neurons-identifies-a-population-that-selectively-degenerates-in-parkinsons-disease-single-nuclei-data#study-download
@@ -65,7 +65,7 @@ DANeuron.integrated <- ScaleData(DANeuron.integrated, verbose = FALSE)
 DANeuron.integrated <- RunPCA(DANeuron.integrated, verbose = FALSE)
 DANeuron.integrated <- RunTSNE(DANeuron.integrated, dims = 1:30)
 DANeuron.integrated<- FindNeighbors(DANeuron.integrated, reduction = "pca", dims = 1:30)
-DANeuron.integrated<- FindClusters(DANeuron.integrated, resolution = 0.5)
+DANeuron.integrated<- FindClusters(DANeuron.integrated, resolution = 0.2)
 
 pdf("DANeuronIntegrated/DANeuronIntegratedCluster.pdf",width=11,height=9)
 DimPlot(DANeuron.integrated,label=TRUE,label.size=7,reduction="tsne")&theme(panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
@@ -81,7 +81,7 @@ DimPlot(DANeuron.integrated,split.by="Group",reduction="tsne")&theme(panel.borde
 dev.off()
 
 
-CCGene=read.table("cellCycleGene/CCGeneCombine.txt",header=T,sep="\t") #711
+CCGene=read.table("CCGeneCombine.txt",header=T,sep="\t") #711
 DefaultAssay(DANeuron.integrated)="RNA"
 genes=intersect(rownames(DANeuron.integrated),CCGene$NAME)
 length(genes) #364
@@ -98,7 +98,7 @@ VlnPlot(DANeuron.integrated,c("G1.S1","S.phase5","G22","G2.M3","M.G14"),ncol=1,p
 dev.off()
 
 
-coreCellularGene=read.table("DANeuron/Kamath_GSE178265/55markersBySegura.txt",header=T)
+coreCellularGene=read.table("55markersBySegura.txt",header=T)
 DefaultAssay(DANeuron.integrated)="RNA"
 DANeuronExpr <- AverageExpression(DANeuron.integrated)[["RNA"]]
 hclust=hclust(as.dist(1-cor(DANeuronExpr)),method="ward.D2")
@@ -144,17 +144,18 @@ infercnv_obj = infercnv::run(infercnv_obj,
                                cutoff=0.1, # cutoff=1 works well for Smart-seq2, and cutoff=0.1 works well for 10x Genomics   0.1= 8037 genes and 5645 cells
                                denoise=TRUE,
                                cluster_by_groups = TRUE,
-                               HMM=FALSE,
+                               HMM=TRUE,
                                output_format = "png",
-                               out_dir="InferCNV"
+                               #out_dir="/Projects/deng/Aging/DANeuron/Kamath_GSE178265/DANeuronIntegrated/InferCNV"
+                               out_dir="/data2/deng/Aging/Ex/DANeuron/InferCNVR02"
                                )
-
 #------------------immune genes between PD and Ctrl----------------------------
+
 DANeuron=DANeuron.integrated 
 table(DANeuron$seurat_clusters) #validate the custers
 DefaultAssay(DANeuron)="RNA"
 DANeuron$Group=paste0(DANeuron$seurat_clusters,"_",DANeuron$Group,sep="")
-Idents(DANeuron)=factor(DANeuron$Group,levels=c(paste0(c(0:12),"_Control",sep=""),paste0(c(0:12),"_LBD_PD",sep="")))
+Idents(DANeuron)=factor(DANeuron$Group,levels=c(paste0(c(0:8),"_Control",sep=""),paste0(c(0:8),"_LBD_PD",sep="")))
 ImmuneAssociateGene=read.table("ImmuneAssociateGene.txt",header=T,sep="\t")
 t=DotPlot(DANeuron,features=ImmuneAssociateGene$Symbol)
 result=merge(t$data,ImmuneAssociateGene,by.x="features.plot",by.y="Symbol")
@@ -163,9 +164,27 @@ C0=C0[order(C0$Group,C0$pct.exp),]
 geneOrder=C0$features.plot
 g=ggplot(result, aes(factor(features.plot,levels=unique(rev(geneOrder))), id, size= pct.exp,color=avg.exp.scaled)) +geom_point(alpha = 0.9)+
 scale_colour_viridis_c()+
-labs(color="Average",size="Percent",x="",y="",title="")+
-theme_bw()+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(angle=90,vjust=1,hjust=1),axis.text.y = element_text(size=rel(1.0))) 
-pdf("DANeuronIntegrated/Immune/ImmuneAssociateGeneInPD.pdf",width=12,height=5)
+labs(color="avg.exp.scaled",size="pct.exp",x="",y="",title="")+
+facet_grid(~Group, scale="free_x",space = "free")+
+theme_bw()+
+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(angle=90,face = "italic",vjust=1,hjust=1),axis.text.y = element_text(size=rel(1.0))) 
+pdf("DANeuronIntegrated/Immune/ImmuneAssociateGeneInPDSplitVersion.pdf",width=15,height=5)
+print(g)
+dev.off()
+
+
+
+G2M=c("CETN2","DCTN1","DYNC1H1","DYNC1I2","HSP90AA1","HSP90AB1","PAFAH1B1","PPP2CA","PPP2R1A","PRKACA","PSMA3","PSMA4","PSMA7","PSMB1","PSMB2","PSMB3","PSMB4","PSMB5","PSMB6","PSMB7","PSMC1","PSMC3","PSMC4","PSMC5","PSMC6","PSMD1","PSMD2","PSMD3","PSMD4","PSMD7","PSMD8","PSMD12","PSMD13","PSME1","RBBP4","RPS27A","SKP1","TUBA4A","TUBB2A","UBA52","UBB","UBC","YWHAE","YWHAG","TUBA1A","SSNA1","DYNLL1","PSMD6","RBX1","ACTR1A","OPTN","PSME3","PSMD14","TUBA1B","TUBB4A","TUBB4B","DCTN2","TUBGCP2","DCTN3","PPME1","MZT2B","TUBB","TUBB2B","MZT2A")
+t=DotPlot(DANeuron,features=G2M)
+result=t$data
+C0=result[result$id==2,]
+C0=C0[order(C0$pct.exp),]
+geneOrder=C0$features.plot
+g=ggplot(result, aes(factor(features.plot,levels=rev(unique(geneOrder))),id, size= pct.exp,color=avg.exp.scaled)) +geom_point()+
+scale_color_gradient2(midpoint=0, low="blue", mid="white",high="red")+
+labs(color="avg.exp.scaled",size="pct.exp",x="",y="",title="")+
+theme_bw()+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(size=rel(1.0),angle=90,face = "italic",vjust=1,hjust=1),axis.text.y = element_text(size=rel(1.0))) 
+pdf("DANeuronIntegrated/Marker/G2MSignature.pdf",width=10,height=4)
 print(g)
 dev.off()
 
@@ -173,10 +192,9 @@ dev.off()
 library(monocle) #local monocle2
 packageVersion("monocle")
 library(Seurat)
-setwd("DANeuron/Kamath_GSE178265")
+setwd("/Projects/deng/Aging/DANeuron/Kamath_GSE178265")
 DANeuron.integrated=readRDS("DANeuronIntegrated/DANeuron.integrated.rds")
-DefaultAssay(DANeuron.integrated)="integrated"
-DANeuron.integrated<- FindClusters(DANeuron.integrated, resolution = 0.5)
+table(DANeuron.integrated$seurat_clusters)
 DANeuron.integrated.small <- DANeuron.integrated[, sample(colnames(DANeuron.integrated), size = 5000, replace=F)]
 
 DefaultAssay(DANeuron.integrated.small)="RNA"
@@ -191,7 +209,7 @@ DANeuron.cds <- estimateSizeFactors(DANeuron.cds)
 DANeuron.cds <- estimateDispersions(DANeuron.cds)
 DANeuron.cds <- detectGenes(DANeuron.cds, min_expr = 0.1)
 head(fData(DANeuron.cds))
-
+gc()
 expressed_genes <- row.names(subset(fData(DANeuron.cds),num_cells_expressed >= 10))
 diff_test_res <- differentialGeneTest(DANeuron.cds[expressed_genes,],fullModelFormulaStr = "~seurat_clusters")
 ordering_genes <- row.names (subset(diff_test_res, qval < 0.01))
@@ -200,23 +218,35 @@ DANeuron.cds <- setOrderingFilter(DANeuron.cds, ordering_genes)
 DANeuron.cds <- reduceDimension(DANeuron.cds, max_components = 2,method = 'DDRTree')
 DANeuron.cds <- orderCells(DANeuron.cds,reverse=TRUE)
 
-pData(DANeuron.cds)$cellType=ifelse(pData(DANeuron.cds)$seurat_clusters %in% c(5,10,11),paste0("C",pData(DANeuron.cds)$seurat_clusters,sep=""),"Others")
-pData(DANeuron.cds)$cellType=factor(pData(DANeuron.cds)$cellType,levels=c("C5","C10","C11","Others"))
-pdf("DANeuronIntegrated/Monocle/DANeuronTrajectoryCellType.pdf",height=6)
+pData(DANeuron.cds)$cellType=ifelse(pData(DANeuron.cds)$seurat_clusters %in% c(2,5),paste0("C",pData(DANeuron.cds)$seurat_clusters,sep=""),"Others")
+pData(DANeuron.cds)$cellType=factor(pData(DANeuron.cds)$cellType,levels=c("C2","C5","Others"))
+pdf("DANeuronIntegrated/Monocle/DANeuronTrajectoryCellType.pdf",height=6,width=6)
 plot_cell_trajectory(DANeuron.cds, color_by = "cellType",cell_size = 1.5)+
-scale_color_manual(values=c("#00BE70","#D575FE","#FF65AC","Gainsboro"))+
+scale_color_manual(values=c("#93AA00","#00B9E3","Gainsboro"))+
 theme(plot.title=element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
-
-pdf("DANeuronIntegrated/Monocle/MathyCtrlTrajectory.pdf")
-plot_cell_trajectory(DANeuron.cds, color_by = "seurat_clusters")
+#"#DB72FB", C7
+pdf("DANeuronIntegrated/Monocle/DANeuronTrajectoryCellTypeXYTitle.pdf",height=6,width=6)
+plot_cell_trajectory(DANeuron.cds, color_by = "cellType",cell_size = 1.5)+
+scale_color_manual(values=c("#93AA00","#00B9E3","Gainsboro"))+
+theme(panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
-pdf("DANeuronIntegrated/Monocle/MathyCtrlState.pdf",height=6)
-plot_cell_trajectory(DANeuron.cds, color_by = "State",cell_size = 1)
+
+pdf("DANeuronIntegrated/Monocle/DANeuronTrajectory.pdf",height=6,width=6)
+plot_cell_trajectory(DANeuron.cds, color_by = "seurat_clusters")+
+theme(plot.title=element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+pdf("DANeuronIntegrated/Monocle/DANeuronState.pdf",height=6,width=6)
+plot_cell_trajectory(DANeuron.cds, color_by = "State",cell_size = 1)+
+theme(plot.title=element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 library(viridis)
-pdf("DANeuronIntegrated/Monocle/MathyCtrlPseudotime.pdf",height=6)
-plot_cell_trajectory(DANeuron.cds, color_by = "Pseudotime",cell_size = 1)+scale_color_viridis_c()
+pdf("DANeuronIntegrated/Monocle/DANeuronPseudotime.pdf",height=6,width=6)
+plot_cell_trajectory(DANeuron.cds, color_by = "Pseudotime",cell_size = 1)+scale_color_viridis_c()+
+theme(plot.title=element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
-
+pdf("DANeuronIntegrated/Monocle/DANeuronPseudotimeXYTitle.pdf",height=6,width=6)
+plot_cell_trajectory(DANeuron.cds, color_by = "Pseudotime",cell_size = 1)+scale_color_viridis_c()+
+theme(panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
 saveRDS(DANeuron.cds,file="DANeuronIntegrated/Monocle/DANeuronIntegrated.cds.rds")
