@@ -18,10 +18,11 @@ counts_matrix = as.matrix(MathyAllCtrlEx@assays$RNA@counts)
 pData=MathyAllCtrlEx@meta.data$seurat_clusters
 names(pData)=rownames(MathyAllCtrlEx@meta.data)
 pData=data.frame(pData)
-annotation=read.table("/Projects/deng/refGene/gencode.v38.annotation.Symbol.location.txt",header=TRUE,row.names=1)
+annotation=read.table("/Projects/deng/refGene/gencode.v38.annotation.removeDupliSymbol.geneType.txt",header=TRUE,row.names=1)
 anno=data.frame("Chr"=annotation$Chr,"Start"=annotation$Start,"End"=annotation$End)
 rownames(anno)=annotation$Symbol
 genes=intersect(rownames(counts_matrix),rownames(anno))
+length(genes)#17046
 anno=anno[genes,]
 anno$Chr=factor(anno$Chr,levels=paste0("chr",c(1:22,"X","Y"),sep=""))
 anno=anno[order(anno$Chr,anno$Star,anno$End),]
@@ -36,9 +37,9 @@ infercnv_obj = infercnv::run(infercnv_obj,
                                cutoff=0.1, # cutoff=1 works well for Smart-seq2, and cutoff=0.1 works well for 10x Genomics   0.1= 8037 genes and 5645 cells
                                denoise=TRUE,
                                cluster_by_groups = TRUE,
-                               HMM=FALSE,
+                               HMM=TRUE,
                                output_format = "png",
-                               out_dir="/Projects/deng/Aging/Ex/MathyEx/InferCNV4Ex"
+                               out_dir="/data2/deng/Aging/Ex/MathyEx/InferCNVEx"
                                )
 
 
@@ -102,37 +103,31 @@ dev.off()
 ############        Arm-level aneuploidy estimated     ##############
 ####################################################################################
 
-
+setwd("/Projects/deng/Aging/Ex/AllControlEx/InferCNV")
 ExData=read.table("/Projects/deng/Aging/Ex/AllControlEx/InferCNV/infercnv.observations.txt",check.names=F,row.names=1,header=T)
 ExCtrl=readRDS("/Projects/deng/Aging/Ex/AllControlEx/ExCtrl.integrated.rds")
-SubType=subset(ExCtrl,seurat_clusters==0)
-
 data=ExData
-
 #obtain the reference value
-AllCellMean=apply(data,1,mean) 
+AllCellMean=apply(data,1,mean) #check the background CNA infor
 summary(AllCellMean)
 #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
 # 0.9972  1.0015  1.0033  1.0035  1.0057  1.0088
 quantile(AllCellMean,0.95) #C0 1.007714
 quantile(AllCellMean,0.05) #C0 0.9994199
 
-SubType=subset(ExCtrl,seurat_clusters==3)
+SubType=subset(ExCtrl,seurat_clusters==0)
 SubTypeCells=intersect(colnames(SubType),colnames(data))
 SubTypeCellsExpr=data[,SubTypeCells]
 SubTypeCellMean=apply(SubTypeCellsExpr,1,mean)
 ExprFrame=cbind("SubTypeCellMean"=SubTypeCellMean,"CNV"=(SubTypeCellMean-1))
 summary(ExprFrame[,2])
 
-
-GainGene=Ratio[Ratio$GainRatio>0.25,]#SubTypeCellsExpr=SubTypeCellsExpr-1
-
-cellNumber=dim(SubTypeCellsExpr)[2]
-geneNumber=dim(SubTypeCellsExpr)[1]
+cellNumber=dim(SubTypeCellsExpr)[2] #7094
+geneNumber=dim(SubTypeCellsExpr)[1] #8109
 Ratio=matrix(data = NA, nrow = geneNumber, ncol = 2, dimnames = list(rownames(ExprFrame), c("Gain","Loss")))
 for(i in 1:dim(ExprFrame)[1]){
-  Ratio[i,1]=sum(SubTypeCellsExpr[i,]>1.007714)
-  Ratio[i,2]=sum(SubTypeCellsExpr[i,]<0.9994199)
+  Ratio[i,1]=sum(SubTypeCellsExpr[i,]>1.007714)  #the top 95%
+  Ratio[i,2]=sum(SubTypeCellsExpr[i,]<0.9994199) #the bottom 5%
   if(!i%%100){
     print(i)
   }
@@ -142,21 +137,20 @@ Ratio=data.frame(Ratio)
 Ratio$GainRatio=Ratio$Gain/cellNumber
 Ratio$LossRatio=Ratio$Loss/cellNumber
 
+GainGene=Ratio[Ratio$GainRatio>0.25,]#SubTypeCellsExpr=SubTypeCellsExpr-1
 LossGene=Ratio[Ratio$LossRatio>0.25,]
-write.table(GainGene,file="CNV8Arm/GainGeneC3.txt",sep="\t",quote=F)
-write.table(LossGene,file="CNV8Arm/LossGeneC3.txt",sep="\t",quote=F)
+write.table(GainGene,file="CNV8Arm/GainGeneC0.txt",sep="\t",quote=F)
+write.table(LossGene,file="CNV8Arm/LossGeneC0.txt",sep="\t",quote=F)
+
 
 head(SubTypeCellMean)
 ExprFrame=cbind("GainRatio"=Ratio$GainRatio,"LossRatio"=Ratio$LossRatio)
 rownames(ExprFrame)=rownames(Ratio)
-
 AllGeneChrLocation=read.table("/Projects/deng/Public/HGNC/GeneChrLocation.txt",header=T,row.names=1,sep="\t")
 AllGeneChrLocation=AllGeneChrLocation[,c("Symbol","ChLocation")]
 AllGeneChrLocation$BandTotal=sub('(\\d+[p|q])(\\d+.*)',"\\1", AllGeneChrLocation$ChLocation)
 BandTotal=data.frame(table(AllGeneChrLocation$BandTotal))
 colnames(BandTotal)=c("Band","TotalBand")
-genes=intersect(genes,AllGeneChrLocation$Symbol) 
-AllGeneChrLocation=AllGeneChrLocation[AllGeneChrLocation$Symbol%in%genes,]
 rownames(AllGeneChrLocation)=AllGeneChrLocation$Symbol
 gene=intersect(rownames(ExprFrame),rownames(AllGeneChrLocation))
 ExprFrame4Graph=ExprFrame[gene,]
@@ -170,7 +164,6 @@ library(reshape2)
 ExprFrame4GraphTmp=melt(ExprFrame4Graph,id=c(3))
 colnames(ExprFrame4GraphTmp)=c("Band","Group","Ratio")
 
-
 t=ggplot(ExprFrame4GraphTmp, aes(Group,Ratio,color=Group)) +
   geom_point(aes(fill=Group),size=0.3, show.legend=TRUE, alpha=0.5, position = position_jitterdodge(jitter.width =0.75,dodge.width = 0.75))+
   scale_shape_manual(values=c(21, 22, 24))+scale_size(range = c(2, 4))+
@@ -179,9 +172,13 @@ t=ggplot(ExprFrame4GraphTmp, aes(Group,Ratio,color=Group)) +
   ylim(0,1)+
   theme_bw()+facet_wrap(factor(Band,levels=unique(ExprFrame4GraphTmp$Band))~.,ncol=6)+
   theme(axis.title.x = element_blank(),axis.title.y = element_blank())
-pdf("CNVsplit8Arm4Cluster4.pdf",width=10)
+pdf("CNVsplit8Arm4Cluster0.pdf",width=10)
 print(t)
 dev.off()
+
+
+
+
 
 
 
@@ -270,7 +267,8 @@ ADLoci=intersect(GWAS[,1],AllResult$Band)
 AllResult$ADLoci=ifelse(AllResult$Band%in%ADLoci,"Yes","No")
 AllResult$colorLabel=ifelse(AllResult$Band%in%ADLoci,"ADLoci",ifelse(AllResult$Chr%in%c(paste0("chr",seq(1,21,2))),"Single","Double"))
 
-t=ggplot(AllResult, aes(index, abs(CNVSum),fill=colorLabel,color=colorLabel,width=barWidth))+geom_bar(stat="identity")+
+t=ggplot(AllResult, aes(index, abs(CNVSum),fill=colorLabel,color=colorLabel,width=barWidth))+
+geom_bar(stat="identity")+
 scale_fill_manual(values = c("DarkOrange","DarkGray","LightGrey"))+
 scale_color_manual(values = c("DarkOrange","DarkGray","LightGrey"))+
 theme_bw()+ylim(0,6)+
