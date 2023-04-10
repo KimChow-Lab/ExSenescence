@@ -117,13 +117,14 @@ print(clus.tree.out)
 dev.off()
 
 ExAll.integrated<- FindClusters(ExAll.integrated, resolution = 0.5)
-saveRDS(ExAll.integrated,"/Projects/deng/Aging/Ex/AllEx/ExAll.integratedTSNE.rds")
+saveRDS(ExAll.integrated,"ExAll.integratedTSNE.rds")
 
 
 #######################################################################################
 ##########    Initial analysis of the Ex contain both AD and control      #############
 #######################################################################################
-
+setwd("/Projects/deng/Aging/Ex/AllEx")
+ExAll.integrated=readRDS("ExAll.integratedTSNE.rds")
 ExAll.integrated=subset(ExAll.integrated,idents=c(0:15)) #remove cluster 16 by their smaller cell number
 
 #-----Figure S8C---------------
@@ -154,3 +155,132 @@ print(t)
 dev.off()
 
 
+#-----Figure 4L---------------
+#-----expression of immune associated genes---------------
+ExTmp=subset(ExAll.integrated,idents=c(0:6)) #only show the top 7 clusters
+table(ExTmp$seurat_clusters) #validate the custers
+DefaultAssay(ExTmp)="RNA"
+ExTmp$Group=paste0(ExTmp$seurat_clusters,"_",ExTmp$Statues,sep="")
+Idents(ExTmp)=factor(ExTmp$Group,levels=c(paste0(c(0:6),"_Control",sep=""),paste0(c(0:6),"_Alzheimer",sep="")))
+ImmuneAssociateGene=read.table("Immune/ImmuneAssociateGene.txt",header=T,sep="\t")
+t=DotPlot(ExTmp,features=ImmuneAssociateGene$Symbol)
+result=merge(t$data,ImmuneAssociateGene,by.x="features.plot",by.y="Symbol")
+C0=result[result$id=="0_Control",] #order by their expression in cluster 0
+C0=C0[order(C0$Group,C0$pct.exp),]
+geneOrder=C0$features.plot
+g=ggplot(result, aes(factor(features.plot,levels=unique(rev(geneOrder))), id, size= pct.exp,color=avg.exp.scaled)) +geom_point(alpha = 0.9)+
+scale_colour_viridis_c()+
+labs(color="avg.exp.scaled",size="pct.exp",x="",y="",title="")+
+theme_bw()+
+facet_grid(~Group, scale="free_x",space = "free")+
+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(angle=90,face = "italic",vjust=1,hjust=1),axis.text.y = element_text(size=rel(1.0))) 
+pdf("Immune/ImmuneAssociateGeneSplitVersion.pdf",width=15,height=4)
+print(g)
+dev.off()
+
+
+
+
+
+####################################################################################
+############ cell cycle phase score calculation for integrated cells  ##############
+####################################################################################
+setwd("/Projects/deng/Aging/Ex/AllEx")
+ExAll.integrated=readRDS("ExAll.integratedTSNE.rds")
+ExAll.integrated=subset(ExAll.integrated,idents=c(0:15)) #remove cluster 16 by their smaller cell number
+CCGene=read.table("/Projects/deng/Aging/Ex/cellCycleGene/CCGeneCombine.txt",header=T,sep="\t") #711
+DefaultAssay(ExAll.integrated)="RNA"
+genes=intersect(rownames(ExAll.integrated),CCGene$NAME)
+length(genes) #364
+CCGene=CCGene[CCGene$NAME%in%genes,]
+CCGenelist=split(CCGene$NAME,CCGene$PHASE)
+ExAll.integrated <- AddModuleScore(
+  object = ExAll.integrated,
+  features = CCGenelist,
+  name = names(CCGenelist),
+  ctrl = 100,
+)
+pdf("IntegratedADCtrlCells_Phase_PvalueDis/ExAll.integrated.cellCycleScore.pdf",width=6)
+VlnPlot(ExAll.integrated,c("G1.S1","S.phase5","G22","G2.M3","M.G14"),ncol=1,pt.size=0)&theme(plot.title=element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+
+cluster=c(0:15)
+CycleScore=ExAll.integrated@meta.data[,c("seurat_clusters","G1.S1","S.phase5","G22","G2.M3","M.G14")]
+PvalueBetCluster=matrix(data = NA, nrow = length(cluster), ncol = length(cluster), dimnames = list(cluster, cluster))
+for(i in 1:length(cluster)){
+  for( j in 1:length(cluster)){
+    C1_score=CycleScore[CycleScore$seurat_clusters==cluster[i],"G2.M3"]
+    C2_score=CycleScore[CycleScore$seurat_clusters==cluster[j],"G2.M3"]
+    delta=mean(C1_score)-mean(C2_score) #the row represent the current cluster
+    pval=t.test(C1_score,C2_score)$p.value
+    PvalueBetCluster[i,j]=delta*(-log10(pval))/abs(delta)
+    if(pval==0){
+        PvalueBetCluster[i,j]=500;
+    }
+    if(i==j||delta<0){
+      PvalueBetCluster[i,j]=0;
+    }
+  }
+}
+PvalueBetCluster=data.frame(PvalueBetCluster,check.names=F)
+PvalueBetCluster$Cluster=as.character(rownames(PvalueBetCluster))
+PvalueBetCluster.df=reshape2::melt(PvalueBetCluster,id=(length(cluster)+1))
+PvalueBetCluster.df$Cluster=factor(PvalueBetCluster.df$Cluster,levels=cluster)
+t=ggplot(PvalueBetCluster.df, aes(x=Cluster, y=value, color=Cluster))+
+geom_boxplot(outlier.shape = NA,outlier.colour=NA)+labs(title="",x="", y = "")+
+geom_jitter(size=1)+
+theme_classic()+
+theme(legend.position="none")+
+theme(axis.title.y = element_text(size=rel(1.0)),axis.text.x = element_text(size=rel(1.0)),axis.text.y = element_text(size=rel(1.0)))
+pdf("IntegratedADCtrlCells_Phase_PvalueDis/IntegratedADCtrlCells_G2M_PvalueDis.pdf",height=2,width=6)
+print(t)
+dev.off()
+
+
+
+
+#######################################################################################
+#################################   infercnv      ######################
+#######################################################################################
+setwd("/Projects/deng/Aging/Ex/AllEx/InferCNV")
+library("infercnv")
+ExAll=readRDS("/Projects/deng/Aging/Ex/AllEx/ExAll.integratedTSNE.rds")
+table(ExAll$seurat_clusters)
+ExSmall <- ExAll[, sample(colnames(ExAll), size = 10000, replace=F)]
+table(ExSmall$seurat_clusters)
+saveRDS(ExSmall,"/data2/deng/Aging/Ex/AllEx/InferCNV/ExSmallSetCells.rds")
+
+ExSmall=readRDS("/data2/deng/Aging/Ex/AllEx/InferCNV/ExSmallSetCells.rds")
+ExSmall=subset(ExSmall,idents=c(0:15))
+pdf("/data2/deng/Aging/Ex/AllEx/ExAllSmall.integratedLabel.pdf",width=9)
+DimPlot(ExSmall, reduction = "tsne", label=TRUE)&theme(panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
+dev.off()
+counts_matrix = as.matrix(ExSmall@assays$RNA@counts)
+pData=ExSmall@meta.data$seurat_clusters
+names(pData)=rownames(ExSmall@meta.data)
+pData=data.frame(pData)
+annotation=read.table("/Projects/deng/refGene/gencode.v38.annotation.removeDupliSymbol.geneType.txt",header=TRUE,row.names=1)
+anno=data.frame("Chr"=annotation$Chr,"Start"=annotation$Start,"End"=annotation$End)
+rownames(anno)=annotation$Symbol
+rownames(anno)=annotation$Symbol
+genes=intersect(rownames(counts_matrix),rownames(anno))
+anno=anno[genes,]
+anno$Chr=factor(anno$Chr,levels=paste0("chr",c(1:22,"X","Y"),sep=""))
+anno=anno[order(anno$Chr,anno$Star,anno$End),]
+genes=intersect(rownames(anno),rownames(counts_matrix))
+length(genes)
+gc()
+infercnv_obj = CreateInfercnvObject(raw_counts_matrix=counts_matrix[genes,],
+                                      annotations_file=pData,
+                                      delim="\t",
+                                      gene_order_file=anno[genes,],
+                                      ref_group_names=NULL)
+
+infercnv_obj = infercnv::run(infercnv_obj,
+                               cutoff=0.1, # cutoff=1 works well for Smart-seq2, and cutoff=0.1 works well for 10x Genomics   0.1= 8037 genes and 5645 cells
+                               denoise=TRUE,
+                               cluster_by_groups = TRUE,
+                               HMM=TRUE,
+                               output_format = "png",
+                               out_dir="/data2/deng/Aging/Ex/AllEx/InferCNV/InferCNV"
+                               )
