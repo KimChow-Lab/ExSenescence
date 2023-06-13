@@ -132,27 +132,26 @@ tiff("ExAll.integratedLabel.tiff",width=300,height=270)
 DimPlot(ExAll.integrated, raster=FALSE,reduction = "tsne")&NoLegend()&theme(axis.title.x = element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 
+#### cell number from different source in  each cluster####
+#Figure S8D
+t=as.matrix(table(Ex$Source))
+tmp=paste0(Ex$seurat_clusters,"_",Ex$Statues,"-",Ex$Source,sep="")
+tmp=as.matrix(table(tmp))
+TmpInfo=as.matrix(do.call(rbind, strsplit(as.character(rownames(tmp)),'_')))
+result=data.frame("Cluster"=TmpInfo[,1],"SourceStatues"=TmpInfo[,2],"Count"=tmp[,1])
+ClusterList=factor(result$Cluster,levels=c(0:15))
+g=ggplot(result, aes(ClusterList, Count, fill=SourceStatues)) +
+  geom_bar(stat="identity",position="fill") +
+  scale_y_continuous(expand=c(0,0))+
+  scale_fill_brewer(palette="Set3")+
+  theme(axis.text.x = element_text(angle = 0))+
+  theme(axis.title.x = element_blank())
+pdf("SourceStatuesDistribution.pdf",height=2.5,width=8)
+print(g)
+dev.off()
+result=result[order(result$Cluster),]
+write.table(result,file="cellNumberRatioInEachSource.txt",sep="\t",quote=F)
 
-#-----Figure 3A---------------
-#-----relationship between subcluster---------------
-Ex=ExAll.integrated
-DefaultAssay(Ex)="RNA"
-ExExpr <- AverageExpression(Ex)[["RNA"]]
-hclust=hclust(as.dist(1-cor(ExExpr)),method="ward.D2")
-pdf("clusterRelationship.pdf",width=10,height=3)
-plot(hclust,hang=-1)
-dev.off()
-#-----expression of layer marker---------------
-order=hclust$labels[hclust$order]
-layerMarker=c("GLRA3","TLE1","TLE3","MDGA1","LUX2","UNC5D","GPR6","MEF2C","DTX4","CUX1","CUX2","KITLG","SATB2","RASGRF2","PVRL3","PRSS12","RORB","NEFH","CNTN6","FOXO1","OPN3","LIX1","SYT9","S100A10","LDB2","CRIM1","KCNK2","SULF2","PCP4","HTR2C","FEZF2","BCL11B","CRYM","OTX1","SOX5","TOX","ETV1","RPRM","RXFP1","FOXP2","SEMA3E","NR4A3","LXN","PPP1R1B","SYT6","OPRK1","NR4A2","SYNPR","TLE","NTNG2","ADRA2A")
-t=DotPlot(Ex,features=layerMarker)
-t=ggplot(t$data, aes(factor(features.plot,levels=unique(features.plot)),factor(id,levels=order),size= pct.exp,color=avg.exp.scaled)) +geom_point()+
-scale_color_gradient2(low="white",mid="white",high = "red")+
-labs(color="Expression",size="Percent",x="",y="",title="")+
-theme_bw()+theme(title = element_text(size=rel(1.0),face="bold"),axis.text.x = element_text(size=rel(1.0),face="bold",angle=90,vjust=1,hjust=1),axis.text.y = element_text(size=rel(1.0),face="bold")) 
-pdf("layerMarker.pdf",width=12,height=5)
-print(t)
-dev.off()
 
 
 #-----Figure 4L---------------
@@ -178,9 +177,21 @@ pdf("Immune/ImmuneAssociateGeneSplitVersion.pdf",width=15,height=4)
 print(g)
 dev.off()
 
-
-
-
+#figure 4B
+#-----expression of immune associated genes---------------
+immuneGene=c("BIN1","COX7C","HLA-A","HLA-B","HLA-C","HLA-DMA","HLA-DMB","HLA-DOA","HLA-DOB","HLA-DPA1","HLA-DPA2","HLA-DPA3","HLA-DPB1","HLA-DPB2","HLA-DQA1","HLA-DQA2","HLA-DQB1","HLA-DQB2","HLA-DQB3","HLA-DRA","HLA-DRB1","HLA-DRB5","HLA-DRB6","HLA-DRB9","HLA-E","HLA-F","HLA-G","HLA-H","HLA-J","HLA-K","HLA-L","HLA-N","HLA-P","HLA-S","HLA-T","HLA-U","HLA-V","HLA-W","HLA-Z","NYAP1","ZCWPW1","ECHDC3","RABEP1","IL34","SCIMP","KLF16","ABCA7","APOE","SIGLEC11","KAT8")
+ExAllTmp=subset(ExAll.integrated,idents=c(0,3,5))
+Idents(ExAllTmp)=factor(ExAllTmp$seurat_clusters,levels=c(0,3,5))
+ExAllTmp$Statues=factor(ExAllTmp$Statues,levels=c("Control","Alzheimer"))
+tiff("immune.Gene_VlnPlot.tiff",width=1800,height=1800)
+VlnPlot(ExAllTmp,features=immuneGene,pt.size=0.01,split.by="Statues")&NoLegend()&theme(axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))+theme(legend.position="right")
+dev.off()
+counts <- ExAllTmp@assays$RNA@counts
+counts=data.frame(counts,check.names=F)
+immuneGeneExpr=counts[intersect(immuneGene,rownames(ExAllTmp)),]
+all(colnames(ExAllTmp)==colnames(immuneGeneExpr))
+immuneGeneExprInfo=cbind(ExAllTmp@meta.data[,c("seurat_clusters","Gender")],t(immuneGeneExpr))
+write.table(immuneGeneExprInfo,file="immune.Gene.expr.txt",sep="\t",quote=F)
 
 ####################################################################################
 ############ cell cycle phase score calculation for integrated cells  ##############
@@ -235,6 +246,8 @@ theme(axis.title.y = element_text(size=rel(1.0)),axis.text.x = element_text(size
 pdf("IntegratedADCtrlCells_Phase_PvalueDis/IntegratedADCtrlCells_G2M_PvalueDis.pdf",height=2,width=6)
 print(t)
 dev.off()
+colnames(PvalueBetCluster.df)=c("CurrentCluster","OtherClusters","-log10(pvalue).adjust")
+write.table(PvalueBetCluster.df,file="IntegratedADCtrlCells_Phase_PvalueDis/IntegratedADCtrlCells_M.G14_PvalueDis.txt",sep="\t",quote=F,row.names=F)
 
 
 
@@ -284,3 +297,46 @@ infercnv_obj = infercnv::run(infercnv_obj,
                                output_format = "png",
                                out_dir="/data2/deng/Aging/Ex/AllEx/InferCNV/InferCNV"
                                )
+
+
+
+#######################################################################################
+############################### Deg between AD and Normal in cell cycling ##############
+#######################################################################################
+setwd("/Projects/deng/Aging/Ex/AllEx/DEGBetADNorInCycing")
+ExAll.integrated=readRDS("/Projects/deng/Aging/Ex/AllEx/ExAll.integratedTSNE.rds")
+DefaultAssay(ExAll.integrated)="RNA"
+ExAll.integrated=subset(ExAll.integrated,idents=c(0:15))
+ExAllTmp=subset(ExAll.integrated,Age>60)
+Idents(ExAllTmp)="Statues"
+table(ExAllTmp$Source)
+#Source=subset(ExAllTmp,Source=="Yang") #Lau Mathy 
+for(i in c(0:15)){
+  SubCluster=subset(ExAllTmp,seurat_clusters==i)
+  ADDeg=FindMarkers(SubCluster,ident.1="Alzheimer",ident.2="Control",pct.min=0.1)
+  ADDeg=ADDeg[ADDeg$p_val<0.01,]
+  write.table(ADDeg,file=paste0("/Projects/deng/Aging/Ex/AllEx/DEGBetADNorInCycing/ADDeg4Old/AllSource/C",i,".txt",sep=""),sep="\t",quote=F)
+}
+
+#------------------------count the DEGs number in each cluster between AD and Ctrl----------------------------
+ADDeg4Old=read.table("D:/Aging/Ex/AllEx/DEGBetADNorInCycing/ADDeg4Old/ADDegInAllSource.txt",header=T)
+ADDeg4Old=ADDeg4Old[ADDeg4Old$p_val_adj<0.01,]
+ADDeg4OldCount=data.frame(table(ADDeg4Old$Cluster,ADDeg4Old$Pattern))
+colnames(ADDeg4OldCount)=c("Cluster","Pattern","Count")
+#ADDeg4OldCount=ADDeg4OldCount[ADDeg4OldCount$Cluster%in%c("C0","C3","C5"),]
+ClusterOrder=factor(ADDeg4OldCount$Cluster,levels=paste0("C",c(0:15),sep=""))
+g=ggplot(ADDeg4OldCount, aes(ClusterOrder, Count, fill=factor(Pattern,levels=c("Up","Down")))) +
+  geom_bar(stat="identity",position=position_dodge()) +
+  scale_y_continuous(expand=c(0,0))+theme_bw()+
+  scale_fill_manual(values=c("Violet","CornflowerBlue"))+
+  guides(fill = guide_legend(title = "Pattern", title.position = "top"),col = guide_legend(nrow = 1))+
+  theme(axis.title.x = element_blank(),axis.title.y = element_blank())
+pdf("D:/Aging/Ex/AllEx/DEGBetADNorInCycing/DEGbetADInOld.pdf",height=4,width=8)
+print(g)
+dev.off()
+
+write.table(ADDeg4OldCount,file="D:/Aging/Ex/AllEx/DEGBetADNorInCycing/DEGNumberbetADInOld.txt",sep="\t",quote=F)
+
+pdf("D:/Aging/Ex/AllEx/DEGBetADNorInCycing/C0C3C5DEGbetADInOld.pdf",height=3,width=5)
+print(g)
+dev.off()
