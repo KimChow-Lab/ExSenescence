@@ -97,6 +97,42 @@ pdf("DANeuronIntegrated/DANeuronIntegrated.cellCycleScore.pdf",width=6)
 VlnPlot(DANeuron.integrated,c("G1.S1","S.phase5","G22","G2.M3","M.G14"),ncol=1,pt.size=0)&theme(plot.title=element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 
+cluster=c(0:8)
+CycleScore=DANeuron.integrated@meta.data[,c("seurat_clusters","G1.S1","S.phase5","G22","G2.M3","M.G14")]
+PvalueBetCluster=matrix(data = NA, nrow = length(cluster), ncol = length(cluster), dimnames = list(cluster, cluster))
+for(i in 1:length(cluster)){
+  for( j in 1:length(cluster)){
+    C1_score=CycleScore[CycleScore$seurat_clusters==cluster[i],"G2.M3"]
+    C2_score=CycleScore[CycleScore$seurat_clusters==cluster[j],"G2.M3"]
+    delta=mean(C1_score)-mean(C2_score) #the row represent the current cluster
+    pval=wilcox.test(C1_score,C2_score)$p.value
+    PvalueBetCluster[i,j]=delta*(-log10(pval))/abs(delta)
+    if(pval==0){
+        PvalueBetCluster[i,j]=500;
+    }
+    if(i==j||delta<0){
+      PvalueBetCluster[i,j]=0;
+    }
+  }
+}
+PvalueBetCluster=data.frame(PvalueBetCluster,check.names=F)
+PvalueBetCluster$Cluster=as.character(rownames(PvalueBetCluster))
+PvalueBetCluster.df=reshape2::melt(PvalueBetCluster,id=(length(cluster)+1))
+PvalueBetCluster.df$Cluster=factor(PvalueBetCluster.df$Cluster,levels=cluster)
+t=ggplot(PvalueBetCluster.df, aes(x=Cluster, y=value, color=Cluster))+
+geom_boxplot(outlier.shape = NA,outlier.colour=NA)+labs(title="",x="", y = "")+
+geom_jitter(size=1)+
+theme_classic()+
+theme(legend.position="none")+
+theme(axis.title.y = element_text(size=rel(1.0)),axis.text.x = element_text(size=rel(1.0)),axis.text.y = element_text(size=rel(1.0)))
+pdf("DANeuronIntegrated/IntegratedDANeuron_Phase_PvalueDis/DANeuron_G2M_PvalueDisR0.2.pdf",height=2,width=4)
+print(t)
+dev.off()
+colnames(PvalueBetCluster.df)=c("CurrentCluster","OtherClusters","-log10(pvalue).adjust")
+write.table(PvalueBetCluster.df,file="IntegratedADCtrlCells_Phase_PvalueDis/IntegratedADCtrlCells_M.G14_PvalueDis.txt",sep="\t",quote=F,row.names=F)
+
+
+
 
 coreCellularGene=read.table("55markersBySegura.txt",header=T)
 DefaultAssay(DANeuron.integrated)="RNA"
@@ -118,7 +154,10 @@ theme_bw()+theme(title = element_text(size=rel(1.0),face="bold"),axis.text.x = e
 pdf("DANeuronIntegrated/SignatureCellularGene.pdf",width=10,height=5)
 print(g)
 dev.off()
-
+result$features.plot=factor(result$features.plot,levels=geneOrder)
+result$id=factor(result$id,levels=order)
+result=result[order(result$features.plot,result$id),]
+write.table(result,file="DANeuronIntegrated/SignatureCellularGeneExpr.txt",sep="\t",quote=F)
 
 library("infercnv")
 EPC=DANeuron.integrated
@@ -149,8 +188,8 @@ infercnv_obj = infercnv::run(infercnv_obj,
                                #out_dir="/Projects/deng/Aging/DANeuron/Kamath_GSE178265/DANeuronIntegrated/InferCNV"
                                out_dir="/data2/deng/Aging/Ex/DANeuron/InferCNVR02"
                                )
-#------------------immune genes between PD and Ctrl----------------------------
 
+#------------------immune genes between PD and Ctrl----------------------------
 DANeuron=DANeuron.integrated 
 table(DANeuron$seurat_clusters) #validate the custers
 DefaultAssay(DANeuron)="RNA"
@@ -171,9 +210,12 @@ theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(angle=90,fa
 pdf("DANeuronIntegrated/Immune/ImmuneAssociateGeneInPDSplitVersion.pdf",width=15,height=5)
 print(g)
 dev.off()
+result$features.plot=factor(result$features.plot,levels=rev(geneOrder))
+result=result[order(result$features.plot),]
+write.table(result,file="DANeuronIntegrated/Immune/ImmuneAssociateGene.Expr.txt",sep="\t",row.names=F,quote=F)
 
 
-
+Idents(DANeuron)=DANeuron$seurat_clusters
 G2M=c("CETN2","DCTN1","DYNC1H1","DYNC1I2","HSP90AA1","HSP90AB1","PAFAH1B1","PPP2CA","PPP2R1A","PRKACA","PSMA3","PSMA4","PSMA7","PSMB1","PSMB2","PSMB3","PSMB4","PSMB5","PSMB6","PSMB7","PSMC1","PSMC3","PSMC4","PSMC5","PSMC6","PSMD1","PSMD2","PSMD3","PSMD4","PSMD7","PSMD8","PSMD12","PSMD13","PSME1","RBBP4","RPS27A","SKP1","TUBA4A","TUBB2A","UBA52","UBB","UBC","YWHAE","YWHAG","TUBA1A","SSNA1","DYNLL1","PSMD6","RBX1","ACTR1A","OPTN","PSME3","PSMD14","TUBA1B","TUBB4A","TUBB4B","DCTN2","TUBGCP2","DCTN3","PPME1","MZT2B","TUBB","TUBB2B","MZT2A")
 t=DotPlot(DANeuron,features=G2M)
 result=t$data
@@ -187,6 +229,10 @@ theme_bw()+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(
 pdf("DANeuronIntegrated/Marker/G2MSignature.pdf",width=10,height=4)
 print(g)
 dev.off()
+result$features.plot=factor(result$features.plot,levels=rev(geneOrder))
+result=result[order(result$features.plot),]
+write.table(result,file="DANeuronIntegrated/Marker/G2MSignature.Expr.txt",sep="\t",row.names=F,quote=F)
+
 
 #---------------monocyte---------------------------------------------
 library(monocle) #local monocle2
@@ -194,6 +240,7 @@ packageVersion("monocle")
 library(Seurat)
 setwd("/Projects/deng/Aging/DANeuron/Kamath_GSE178265")
 DANeuron.integrated=readRDS("DANeuronIntegrated/DANeuron.integrated.rds")
+
 table(DANeuron.integrated$seurat_clusters)
 DANeuron.integrated.small <- DANeuron.integrated[, sample(colnames(DANeuron.integrated), size = 5000, replace=F)]
 
