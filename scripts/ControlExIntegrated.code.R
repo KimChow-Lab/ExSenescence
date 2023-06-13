@@ -7,6 +7,7 @@ library(dplyr)
 library(msigdbr)
 library(tibble)
 library(fgsea)
+library(viridis)
 
 #######################################################################################
 ##############    Merge snRNA profiles from control samples     #######################
@@ -133,20 +134,20 @@ dev.off()
 #######################################################################################
 setwd("/Projects/deng/Aging/Ex/AllControlEx")
 ExCtrl.integrated=readRDS("ExCtrl.integrated.rds")
-#Figure S2B
+#Figure S3B
 tiff("ExCtrl.integratedLabel.tiff",width=350,height=270)
 DimPlot(ExCtrl.integrated, raster=FALSE,reduction = "tsne")&theme(axis.title.x = element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
-#Figure S2C
+#Figure S2A
 tiff("ExCtrl.integratedSource.tiff",width=500,height=540)
 DimPlot(ExCtrl.integrated, raster=FALSE,reduction = "tsne",split.by="Source",ncol=2)&NoLegend()&theme(axis.title.x = element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
-#Figure S2C
+#not show in the manuscript
 tiff("ExCtrl.integratedGroupSource.tiff",width=900,height=800)
 DimPlot(ExCtrl.integrated, pt.size =0.5,raster=FALSE,reduction = "tsne",group.by="Source")&theme(axis.title.x = element_blank(),axis.text.x = element_blank(),axis.text.y = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 
-#Figure S2D
+#Figure S3C
 t=as.matrix(table(ExCtrl.integrated$Source))
 tmp=paste0(ExCtrl.integrated$seurat_clusters,"_",ExCtrl.integrated$Source,sep="")
 tmp=as.matrix(table(tmp))
@@ -162,6 +163,9 @@ g=ggplot(result, aes(ClusterList, Count, fill=Source)) +
 pdf("SourceDistribution.pdf",height=2.5,width=8)
 print(g)
 dev.off()
+result$Cluster=factor(result$Cluster,levels=c(0:14))
+result=result[order(result$Cluster),]
+write.table(result,file="cellNumberRatioInEachSource.txt",sep="\t",quote=F)
 
 ExCtrl.integrated$geneCount=ExCtrl.integrated$nCount_RNA/1000
 pdf("ExCtrl.integrated.nCount_RNA.pdf",width=12,height=4)
@@ -173,6 +177,8 @@ pdf("ExCtrl.integrated.nCount_RNA.pdf",width=12,height=4)
 VlnPlot(ExCtrl.integrated,features=c("geneNumber"),ncol=1,pt.size=0)&theme(plot.title=element_blank(),axis.title.x = element_blank(),axis.title.y = element_blank(),panel.border = element_rect(fill=NA,color="black", size=1.5, linetype="solid"))
 dev.off()
 
+write.table(ExCtrl.integrated@meta.data[,c("seurat_clusters","geneCount","geneNumber")],file="geneCountAndNumber.txt",sep="\t",quote=F)
+
 metaData=ExCtrl.integrated@meta.data
 geneCount <- metaData %>%
           group_by(seurat_clusters) %>%
@@ -181,6 +187,8 @@ geneNumber <- metaData %>%
           group_by(seurat_clusters) %>%
           summarize(mean=mean(nFeature_RNA))
 
+write.table(data.frame(geneCount=geneCount,geneNumber=geneNumber),file="geneCountAndNumber_mean.txt",sep="\t",quote=F)
+
 
 #Figure S2E
 tiff("ExCtrl.integratedGender.tiff",width=500,height=270)
@@ -188,7 +196,7 @@ DimPlot(ExCtrl.integrated, raster=FALSE,reduction = "tsne",split.by="Gender")&No
 dev.off()
 
 
-#Figure S2F
+#Figure S3F
 CCGene=read.table("/Projects/deng/Aging/Ex/cellCycleGene/CCGeneCombine.txt",header=T,sep="\t") #711
 DefaultAssay(ExCtrl.integrated)="RNA"
 genes=intersect(rownames(ExCtrl.integrated),CCGene$NAME)
@@ -210,8 +218,8 @@ CycleScore=ExCtrl.integrated@meta.data[,c("seurat_clusters","G1.S1","S.phase5","
 PvalueBetCluster=matrix(data = NA, nrow = length(cluster), ncol = length(cluster), dimnames = list(cluster, cluster))
 for(i in 1:length(cluster)){
   for( j in 1:length(cluster)){
-    C1_score=CycleScore[CycleScore$seurat_clusters==cluster[i],"M.G14"]
-    C2_score=CycleScore[CycleScore$seurat_clusters==cluster[j],"M.G14"]
+    C1_score=CycleScore[CycleScore$seurat_clusters==cluster[i],"G1.S1"]
+    C2_score=CycleScore[CycleScore$seurat_clusters==cluster[j],"G1.S1"]
     delta=mean(C1_score)-mean(C2_score) #the row represent the current cluster
     pval=wilcox.test(C1_score,C2_score)$p.value
     PvalueBetCluster[i,j]=delta*(-log10(pval))/abs(delta)
@@ -233,10 +241,12 @@ geom_jitter(size=1)+
 theme_classic()+
 theme(legend.position="none")+
 theme(axis.title.y = element_text(size=rel(1.0)),axis.text.x = element_text(size=rel(1.0)),axis.text.y = element_text(size=rel(1.0)))
-pdf("IntegratedCtrlCells_Phase_PvalueDis/MathyCtrlCells_MG1_PvalueDis.pdf",height=2,width=6)
+pdf("IntegratedCtrlCells_Phase_PvalueDis/IntegratedCtrlCells_MG1_PvalueDis.pdf",height=2,width=6)
 print(t)
 dev.off()
 
+colnames(PvalueBetCluster.df)=c("CurrentCluster","OtherClusters","-log10(pvalue).adjust")
+write.table(PvalueBetCluster.df,file="IntegratedCtrlCells_Phase_PvalueDis/IntegratedCtrlCells_G1S_PvalueDis.txt",sep="\t",quote=F,row.names=F)
 
 
 #https://www.nature.com/articles/nrm3629
@@ -251,6 +261,8 @@ theme_bw()+theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(
 pdf("CellCycleGene.pdf",width=4,height=5)
 print(g)
 dev.off()
+write.table(result,file="CellCycleGeneExprAcrossSubCluster.txt",sep="\t",quote=F,row.names=F)
+
 
 gene=c("ATR","ATM","CHEK1","CHEK2")
 t=DotPlot(subset(ExCtrl,ident=c(0:5)),features=gene)
@@ -301,14 +313,22 @@ dev.off()
 #######################################################################################
 #Figure S5
 ExTmpExpr <- AverageExpression(ExCtrl.integrated)[["RNA"]]
-DNADamage=read.table("/Projects/deng/Aging/Ex/AllEx/DNArepair/DNArepairGeneList.txt",header=T,row.names=1,sep="\t")
+DNADamage=read.table("/Projects/deng/Aging/Ex/AllEx/DNArepair/DNADamage8Kim.txt",header=T,row.names=1,sep="\t")
 DNADamage$GeneSymobl=rownames(DNADamage)
+
 
 tmpCluster=DNADamage[DNADamage$Group %in% c("Nucleotide excision repair"),]
 tmpClusterExpr=ExTmpExpr[intersect(rownames(ExTmpExpr),tmpCluster$GeneSymobl),]
 pdf("Pheatmap/NER.pdf",width=6,height=4)
 pheatmap(t(tmpClusterExpr),clustering_method="ward.D2",scale="column")
 dev.off()
+
+
+DNADamageExpr=ExTmpExpr[intersect(rownames(ExTmpExpr),rownames(DNADamage)),]
+DNADamageExpr=data.frame(DNADamageExpr,check.names=F)
+DNADamageExpr$GeneSymobl=rownames(DNADamageExpr)
+DNADamageExprAddInfo=merge(DNADamage,DNADamageExpr,by="GeneSymobl")
+write.table(DNADamageExprAddInfo,file="DNARepair/DNADamageExprAcrossCluster.txt",row.names=F,sep="\t",quote=F)
 
 
 #######################################################################################
@@ -396,7 +416,7 @@ print(g)
 dev.off()
 
 
-# Figure S6D
+# Figure S6
 # Exrepssion of the SASP assocaited genes
 SASPmarker=read.table("/Projects/deng/Aging/Ex/AllEx/Senescence/SASPmarker.txt",header=T,sep="\t")
 t=DotPlot(ExCtrl,features=SASPmarker$GeneSymobl)
@@ -416,10 +436,62 @@ theme(title = element_text(size=rel(1.0)),axis.text.x = element_text(face="bold"
 pdf("SASPmarkerGene.pdf",width=22,height=4)
 print(g)
 dev.off()
+write.table(result,file="SASPmarkerGeneExprAcrossCluster.txt",row.names=F,sep="\t",quote=F)
 
+# Figure 3A
+setwd("/Projects/deng/Aging/Ex/AllControlEx/LayerInfo")
+ExCtrl.integrated=readRDS("/Projects/deng/Aging/Ex/AllControlEx/ExCtrl.integrated.rds")
+DefaultAssay(ExCtrl.integrated)="RNA"
+ExExpr <- AverageExpression(ExCtrl.integrated)[["RNA"]]
+hclust=hclust(as.dist(1-cor(ExExpr)),method="ward.D2")
+pdf("clusterRelationship.pdf",width=10)
+plot(hclust,hang=-1)
+dev.off()
+order=hclust$labels[hclust$order]
+layerMarker=c("GLRA3","TLE1","TLE3","MDGA1","LUX2","UNC5D","GPR6","MEF2C","DTX4","CUX1","CUX2","KITLG","SATB2","RASGRF2","PVRL3","PRSS12","RORB","NEFH","CNTN6","FOXO1","OPN3","LIX1","SYT9","S100A10","LDB2","CRIM1","KCNK2","SULF2","PCP4","HTR2C","FEZF2","BCL11B","CRYM","OTX1","SOX5","TOX","ETV1","RPRM","RXFP1","FOXP2","SEMA3E","NR4A3","LXN","PPP1R1B","SYT6","OPRK1","NR4A2","SYNPR","TLE","NTNG2","ADRA2A")
+t=DotPlot(ExCtrl.integrated,features=layerMarker)
+t=ggplot(t$data, aes(factor(features.plot,levels=unique(features.plot)),factor(id,levels=order),size= pct.exp,color=avg.exp.scaled)) +geom_point()+
+scale_color_gradient2(low="white",mid="white",high = "red")+
+labs(color="Expression",size="Percent",x="",y="",title="")+
+theme_bw()+theme(title = element_text(size=rel(1.0),face="bold"),axis.text.x = element_text(size=rel(1.0),face="bold",angle=90,vjust=1,hjust=1),axis.text.y = element_text(size=rel(1.0),face="bold")) 
+pdf("layerMarker.pdf",width=12,height=5)
+print(t)
+dev.off()
 
+# Figure 3C
+setwd("/Projects/deng/Aging/Ex/AllControlEx/KEGGCellCycle")
+ExCtrl=readRDS("/Projects/deng/Aging/Ex/AllControlEx/ExCtrl.integrated.rds")
+DefaultAssay(ExCtrl)="RNA"
+ExCtrlxExpr <- AverageExpression(ExCtrl)[["RNA"]]
+m_df<- msigdbr(species = "Homo sapiens", category = "C2",subcategory="CP:KEGG")
+fgsea_sets<- m_df %>% split(x = .$gene_symbol, f = .$gs_name) 
+cellCycle=intersect(fgsea_sets$KEGG_CELL_CYCLE,rownames(ExCtrlxExpr))
+exprTmp=ExCtrlxExpr[cellCycle,]
+exprTmp=exprTmp[rowMeans(exprTmp)>0,]
+pdf("cellCycleHeatmapTmp.pdf",height=5,wid=4)
+pheatmap(exprTmp,clustering_method="ward.D2",scale="row",border_color=NA,show_rownames=F,clustering_distance_cols="correlation",clustering_distance_rows="correlation",color = colorRampPalette(c("navy", "white", "firebrick3"))(50))
+dev.off()
+t=pheatmap(exprTmp,clustering_method="ward.D2",scale="row",border_color=NA,show_rownames=F,clustering_distance_cols="correlation",clustering_distance_rows="correlation",color = colorRampPalette(c("navy", "white", "firebrick3"))(50))
+tree=cutree(t$tree_row,k=5)
+anno=data.frame(tree)
+anno$Group=paste0("G",anno$tree,sep="")
+anno$tree=NULL
+pdf("cellCycleHeatmapGroup.pdf",height=6,wid=4)
+pheatmap(exprTmp,clustering_method="ward.D2",scale="row",annotation_row=anno,border_color=NA,show_rownames=F,clustering_distance_cols="correlation",clustering_distance_rows="correlation",color = colorRampPalette(c("navy", "white", "firebrick3"))(50))
+dev.off()
+write.table(anno,file="cellCycleGeneGroup.txt",col.names=T,row.names=T,quote=F,sep="\t")
+pdf("cellCycleHeatmapGroup4Name.pdf",height=20,wid=6)
+pheatmap(exprTmp,clustering_method="ward.D2",scale="row",annotation_row=anno,border_color=NA,show_rownames=T,clustering_distance_cols="correlation",clustering_distance_rows="correlation",color = colorRampPalette(c("navy", "white", "firebrick3"))(50))
+dev.off()
+
+exprTmp=exprTmp[rownames(anno),]
+all(rownames(exprTmp)==rownames(anno))
+exprTmp=data.frame(exprTmp,check.names=F)
+exprTmp$Cluster=anno$Group
+write.table(exprTmp,file="cellCycleFromKEGGExpr.txt",sep="\t",quote=F)
 
 #---revise--------
+#Figure 5E
 setwd("/Projects/deng/Aging/Ex/AllControlEx/Senescence")
 ExCtrl=readRDS("/Projects/deng/Aging/Ex/AllControlEx/ExCtrl.integrated.rds")
 pdf("ExCtrlMarker.pdf",width=10,height=8)
