@@ -49,22 +49,23 @@ infercnv_obj = infercnv::run(infercnv_obj,
 ####################################################################################
 
 # the output figures were showen in Figure 1F, 2A, 2B, 2C, S1E, S2G
+ExAll.integrated=readRDS("ExAll.integratedTSNE.rds")
+ExAll.integrated=subset(ExAll.integrated,idents=c(0:15))
 
-# copy number estimated by inferCNV
-ExData=read.table("/Projects/deng/Aging/Ex/MathyEx/InferCNV4Ex/infercnv.observations.txt",check.names=F,row.names=1,header=T)
+ExAll.integrated$Group=paste0(ExAll.integrated$Source,"_",ExAll.integrated$Statues,sep="")
 
-# Defination the sub cluster of the cell type to generate their global CNV plot, here use cluster 13 from Ex as example
-MathyAllCtrlDifCell=readRDS("/Projects/deng/Aging/Ex/MathyEx/MathyCtrlDifferentiatedCells.rds")
-MathyAllCtrlEx=subset(MathyAllCtrlDifCell,seurat_clusters %in% c(2,3,4,5,6,8,10,11,13,14,16,17,18)) #
-C13=subset(MathyAllCtrlEx,seurat_clusters==13)
-
-data=ExData
+for(Group in unique(ExAll.integrated$Group)){
+setwd(paste0("/data2/deng/Aging/Ex/AllEx/InferCNV/",Group,sep=""))
+infercnv.observations=read.table("infercnv.observations.txt",check.names=F,row.names=1,header=T)
+for(targetCluster in c(0,3,5)){
+subType=subset(ExAll.integrated,seurat_clusters==targetCluster)
+data=infercnv.observations
 AllCellMean=apply(data,1,mean)
-C13Cells=intersect(colnames(C13),colnames(data))
-C13CellsExpr=data[,C13Cells]
-C13CellMean=apply(C13CellsExpr,1,mean)
-head(C13CellMean)
-ExprFrame=cbind("AllCellMean"=AllCellMean,"C13CellMean"=C13CellMean,"CNV"=(C13CellMean-1)) # we used the average CNV scores across all cells minus 1 as the CNV score for each gene
+subTypeCells=intersect(colnames(subType),colnames(data))
+subTypeCellsExpr=data[,subTypeCells]
+subTypeCellMean=apply(subTypeCellsExpr,1,mean)
+head(subTypeCellMean)
+ExprFrame=cbind("AllCellMean"=AllCellMean,"subTypeCellMean"=subTypeCellMean,"CNV"=(subTypeCellMean-1)) # we used the average CNV scores across all cells minus 1 as the CNV score for each gene
 rownames(ExprFrame)=rownames(data)
 annotation=read.table("/Projects/deng/refGene/gencode.v38.annotation.removeDupliSymbol.geneType.txt",header=TRUE,row.names=1)
 anno=data.frame("Chr"=annotation$Chr,"Start"=annotation$Start,"End"=annotation$End)
@@ -93,9 +94,11 @@ t=ggplot(ExprFrame4Graph, aes(x=index,y = CNV)) +
   theme(axis.title.x = element_blank(),axis.text.x = element_blank())+
   theme(panel.spacing.x = unit(0,"line"),panel.grid.major = element_blank(), panel.grid.minor = element_blank())
 
-tiff("ExCluster13CNV.tiff",width=1000,height=200)
+pdf(paste0("/data2/deng/Aging/Ex/AllEx/InferCNV/RibonPlot/RibonPlot_ExCtrl_Cluster",targetCluster,"_",Group,".pdf"),width=8,height=2)
 print(t)
 dev.off()
+}
+}
 
 
 
@@ -146,18 +149,18 @@ write.table(LossGene,file="CNV8Arm/LossGeneC0.txt",sep="\t",quote=F)
 head(SubTypeCellMean)
 ExprFrame=cbind("GainRatio"=Ratio$GainRatio,"LossRatio"=Ratio$LossRatio)
 rownames(ExprFrame)=rownames(Ratio)
-AllGeneChrLocation=read.table("/Projects/deng/Public/HGNC/GeneChrLocation.txt",header=T,row.names=1,sep="\t")
-AllGeneChrLocation=AllGeneChrLocation[,c("Symbol","ChLocation")]
-AllGeneChrLocation$BandTotal=sub('(\\d+[p|q])(\\d+.*)',"\\1", AllGeneChrLocation$ChLocation)
-BandTotal=data.frame(table(AllGeneChrLocation$BandTotal))
+GeneChrLocation=read.table("/Projects/deng/Public/HGNC/GeneChrLocation.txt",header=T,row.names=1,sep="\t")
+GeneChrLocation=GeneChrLocation[,c("Symbol","ChLocation")]
+GeneChrLocation$BandTotal=sub('(\\d+[p|q])(\\d+.*)',"\\1", GeneChrLocation$ChLocation)
+BandTotal=data.frame(table(GeneChrLocation$BandTotal))
 colnames(BandTotal)=c("Band","TotalBand")
-rownames(AllGeneChrLocation)=AllGeneChrLocation$Symbol
-gene=intersect(rownames(ExprFrame),rownames(AllGeneChrLocation))
+rownames(GeneChrLocation)=GeneChrLocation$Symbol
+gene=intersect(rownames(ExprFrame),rownames(GeneChrLocation))
 ExprFrame4Graph=ExprFrame[gene,]
-AllGeneChrLocation=AllGeneChrLocation[gene,]
-all(rownames(ExprFrame4Graph)==rownames(AllGeneChrLocation))
+GeneChrLocation=GeneChrLocation[gene,]
+all(rownames(ExprFrame4Graph)==rownames(GeneChrLocation))
 ExprFrame4Graph=data.frame(ExprFrame4Graph)
-ExprFrame4Graph$Band=AllGeneChrLocation$BandTotal
+ExprFrame4Graph$Band=GeneChrLocation$BandTotal
 
 ExprFrame4Graph=ExprFrame4Graph[!ExprFrame4Graph$Band=="q33.3",]
 library(reshape2)
@@ -185,97 +188,98 @@ dev.off()
 ####################################################################################
 ############        Integrated the AD loci into infercnv barplot      ##############
 ####################################################################################
-ExData=read.table("/Projects/deng/Aging/Ex/AllEx/InferCNV/infercnv.observations.txt",check.names=F,row.names=1,header=T)
-ExAll=readRDS("/Projects/deng/Aging/Ex/AllEx/ExAll.integratedTSNE.rds")
-table(ExAll$Statues)
-SubType=subset(ExAll,seurat_clusters==3)
-SubType
-#SubType=subset(ExAll,seurat_clusters==6&Source%in%"Nagy") #for each dataset
-data=ExData
-#data=OliData
-SubTypeCells=intersect(colnames(SubType),colnames(data))
-SubTypeCellsExpr=data[,SubTypeCells]
-SubTypeCellMean=apply(SubTypeCellsExpr,1,mean)
-head(SubTypeCellMean)
-ExprFrame=cbind("SubTypeCellMean"=SubTypeCellMean,"CNV"=(SubTypeCellMean-1))
-quantile(ExprFrame[,2],0.95) #C0 0.009026389
-rownames(ExprFrame)=rownames(data)
-annotation=read.table("/Projects/deng/refGene/gencode.v38.annotation.removeDupliSymbol.geneType.txt",header=TRUE,row.names=1)
-anno=data.frame("Chr"=annotation$Chr,"Start"=annotation$Start,"End"=annotation$End)
-rownames(anno)=annotation$Symbol
-anno=anno[anno$Chr%in%paste0("chr",c(1:22),sep=""),]
-genes=intersect(rownames(data),rownames(anno))
-AllGeneChrLocation=read.table("/Projects/deng/Public/HGNC/GeneChrLocation.txt",header=T,row.names=1,sep="\t")
-AllGeneChrLocation=AllGeneChrLocation[,c("Symbol","ChLocation")]
-#AllGeneChrLocation$BandTotal=sub('(\\d+[p|q]\\d+)(.*)',"\\1", AllGeneChrLocation$ChLocation)
-AllGeneChrLocation$BandTotal=AllGeneChrLocation$ChLocation
-BandTotal=data.frame(table(AllGeneChrLocation$BandTotal))
-colnames(BandTotal)=c("Band","TotalBand")
+#ExData=read.table("/Projects/deng/Aging/Ex/AllEx/InferCNV/infercnv.observations.txt",check.names=F,row.names=1,header=T)
+ExAll.integrated=readRDS("/Projects/deng/Aging/Ex/AllEx/ExAll.integratedTSNE.rds")
+DefaultAssay(ExAll.integrated)="RNA"
+ExAll.integrated$Group=paste0(ExAll.integrated$Source,"_",ExAll.integrated$Statues,sep="")
 
-genes=intersect(genes,GeneChrLocation$Symbol) 
-length(genes)
-anno=anno[genes,]
-anno$Chr=factor(anno$Chr,levels=paste0("chr",c(1:22),sep=""))
-anno=anno[order(anno$Chr,anno$Star,anno$End),]
-geneOrder=intersect(rownames(anno),rownames(data))
-ExprFrame4Graph=data.frame(ExprFrame[geneOrder,])
-ExprFrame4Graph$index=c(1:dim(ExprFrame4Graph)[1]) #build the index for each gene
-all(rownames(anno)==rownames(ExprFrame4Graph))
-ExprFrame4Graph=cbind(anno,ExprFrame4Graph)
-GeneChrLocation=AllGeneChrLocation[AllGeneChrLocation$Symbol%in%genes,]
-rownames(GeneChrLocation)=GeneChrLocation$Symbol
-GeneChrLocation=GeneChrLocation[genes,]
-all(rownames(GeneChrLocation)==rownames(ExprFrame4Graph)) #TRUE
-#ExprFrame4Graph$Band=sub('(\\d+[p|q]\\d+)(.*)',"\\1", GeneChrLocation$ChLocation)
-ExprFrame4Graph$Band=GeneChrLocation$ChLocation
-ExprFrame4Graph$CNVSig=ifelse(abs(ExprFrame4Graph$CNV)>0.01,"Sig","NonSig")
-BandTargetInSingleCell=data.frame(table(ExprFrame4Graph$Band))
-colnames(BandTargetInSingleCell)=c("Band","TotalBandInSC")
-BandSum=ExprFrame4Graph %>% group_by(Band) %>% summarise(CNVSum = sum(CNV))
+for(g in unique(ExAll.integrated$Group)){
+  setwd(paste0("/data2/deng/Aging/Ex/AllEx/InferCNV/",g,sep=""))
+  ExData=read.table("infercnv.observations.txt",check.names=F,row.names=1,header=T)
+  for(targetCluster in c(0,3,5)){
+     SubType=subset(ExAll.integrated,Group==g&seurat_clusters==targetCluster)
+     #SubType=subset(ExAll.integrated,seurat_clusters==targetCluster) #only for the integrated dataset
+     data=ExData
 
-Bands=intersect(BandTargetInSingleCell$Band,BandTotal$Band)
-BandTargetInSingleCell=BandTargetInSingleCell[BandTargetInSingleCell$Band%in%Bands,]
-BandTotal=BandTotal[BandTotal$Band%in%Bands,]
-BandInfo=merge(BandTotal,BandTargetInSingleCell,by="Band")
+     SubTypeCells=intersect(colnames(SubType),colnames(data))
+     SubTypeCellsExpr=data[,SubTypeCells]
+     SubTypeCellMean=apply(SubTypeCellsExpr,1,mean)
+     #obtain the SNV score, CNV score with 1 reprent no gain or loss
+     ExprFrame=cbind("SubTypeCellMean"=SubTypeCellMean,"CNV"=(SubTypeCellMean-1))
+     quantile(ExprFrame[,2],0.95) #C0 0.009026389
+     rownames(ExprFrame)=rownames(data)
 
-SigBand=ExprFrame4Graph[ExprFrame4Graph$CNVSig=="Sig",]
-BandSig=data.frame(table(SigBand$Band))
-colnames(BandSig)=c("Band","SigBand")
-BandInfoTotal=merge(BandInfo,BandSig,by="Band",all.x = TRUE)
-BandInfoTotal[is.na(BandInfoTotal)]=0
-BandInfoTotal$Ratio=BandInfoTotal$SigBand/BandInfoTotal$TotalBand
+     #this gene anotation file was used to order the genes based on their chromosome location from chr1 to chr22
+     annotation=read.table("/Projects/deng/refGene/gencode.v38.annotation.removeDupliSymbol.geneType.txt",header=TRUE,row.names=1)
+     anno=data.frame("Chr"=annotation$Chr,"Start"=annotation$Start,"End"=annotation$End)
+     rownames(anno)=annotation$Symbol
+     anno=anno[anno$Chr%in%paste0("chr",c(1:22),sep=""),] #only consider the genes from chr1 to chr22, remove genes from chrM
+     genes=intersect(rownames(data),rownames(anno))
 
-ExprFrame4Graph$Symbol=rownames(ExprFrame4Graph)
-ExprFrame4GraphBandMerge=merge(ExprFrame4Graph,BandInfoTotal,by="Band")
-ExprFrame4GraphBandMerge=ExprFrame4GraphBandMerge[order(ExprFrame4GraphBandMerge$index),]
-rownames(ExprFrame4GraphBandMerge)=ExprFrame4GraphBandMerge$Symbol
+     #to get the band information for each genes, this information were downloaded from HGNC database
+     GeneChrLocation=read.table("/Projects/deng/Public/HGNC/GeneChrLocation.txt",header=T,row.names=1,sep="\t")
+     GeneChrLocation=GeneChrLocation[,c("Symbol","ChLocation")]
+     #GeneChrLocation$BandTotal=sub('(\\d+[p|q]\\d+)(.*)',"\\1", GeneChrLocation$ChLocation)
+     GeneChrLocation$BandTotal=GeneChrLocation$ChLocation
+     BandTotal=data.frame(table(GeneChrLocation$BandTotal)) #get the total number genes for each Band
+     colnames(BandTotal)=c("Band","TotalBand")
 
-ChrBandIndex <- ExprFrame4Graph %>% group_by(Band) %>% filter (! duplicated(Band)) #extract the start location for each chr
-AllResult=merge(ChrBandIndex,BandInfoTotal,by="Band")
-AllResult=merge(AllResult,BandSum,by="Band")
-AllResult=AllResult[order(AllResult$index),]
-BandMidIndex=array()
-for(i in 2:(dim(AllResult)[1]+1)){
-    BandMidIndex[i-1]=AllResult[i,"index"]-AllResult[(i-1),"index"]
-}
-AllResult$barWidth=BandMidIndex
+     #order CNV matrix based on their gene order on the chromosome
+     genes=intersect(genes,GeneChrLocation$Symbol) 
+     length(genes)
+     anno=anno[genes,]
+     anno$Chr=factor(anno$Chr,levels=paste0("chr",c(1:22),sep=""))
+     anno=anno[order(anno$Chr,anno$Star,anno$End),]
+     geneOrder=intersect(rownames(anno),rownames(data))
+     ExprFrame4Graph=data.frame(ExprFrame[geneOrder,])
+     
+     #Add the gene chromosome information to CNV score matrix
+     ExprFrame4Graph$index=c(1:dim(ExprFrame4Graph)[1]) #build the index for each gene
+     all(rownames(anno)==rownames(ExprFrame4Graph))
+     ExprFrame4Graph=cbind(anno,ExprFrame4Graph)
 
+     #Add the gene band information to CNV score matrix
+     rownames(GeneChrLocation)=GeneChrLocation$Symbol
+     GeneChrLocation=GeneChrLocation[genes,]
+     all(rownames(GeneChrLocation)==rownames(ExprFrame4Graph)) #TRUE
+     ExprFrame4Graph$Band=GeneChrLocation$ChLocation
 
-#Add the GWAS loci information on the graph
-GWAS=read.table("/Projects/deng/Aging/Ex/AllControlEx/GWASLoci.txt")
-ADLoci=intersect(GWAS[,1],AllResult$Band)
-AllResult$ADLoci=ifelse(AllResult$Band%in%ADLoci,"Yes","No")
-AllResult$colorLabel=ifelse(AllResult$Band%in%ADLoci,"ADLoci",ifelse(AllResult$Chr%in%c(paste0("chr",seq(1,21,2))),"Single","Double"))
+     #got the CNV score for each band (as the sum score within each Band)
+     BandSum=ExprFrame4Graph %>% group_by(Band) %>% summarise(CNVSum = sum(CNV))
+     
+     #ExprFrame4Graph$Symbol=rownames(ExprFrame4Graph)
+     ExprFrame4GraphAddBandSum=merge(ExprFrame4Graph,BandSum,by="Band") #this si the total CNV score matrix (keep the gene information)
+     
+     ExprFrame4GraphAddBandSum.uni=ExprFrame4GraphAddBandSum[!duplicated(ExprFrame4GraphAddBandSum$Band),] #randomly seleced one band (not this step removed the gene information)
+     ExprFrame4GraphAddBandSum.uni=ExprFrame4GraphAddBandSum.uni[order(ExprFrame4GraphAddBandSum.uni$index),c("Band","index","Chr","CNVSum")] #remove the gene dependent columns
+     #obtain the width of the band based on their expressed gene number
+     BandMidIndex=array()
+     for(i in 2:(dim(ExprFrame4GraphAddBandSum.uni)[1]+1)){
+         BandMidIndex[i-1]=ExprFrame4GraphAddBandSum.uni[i,"index"]-ExprFrame4GraphAddBandSum.uni[(i-1),"index"]
+     }
+     ExprFrame4GraphAddBandSum.uni$barWidth=BandMidIndex
+     
+     #Add the GWAS loci information on the graph, D:/Alzheimer/GWAS
+     GWAS=read.table("/data2/deng/Alzheimer/GWAS/ADLociBandInfor.txt",header=T)
+     ADLoci=intersect(GWAS$ChLocation,ExprFrame4GraphAddBandSum.uni$Band)
+     ExprFrame4GraphAddBandSum.uni$ADLoci=ifelse(ExprFrame4GraphAddBandSum.uni$Band%in%ADLoci,"Yes","No")
+     ExprFrame4GraphAddBandSum.uni$colorLabel=ifelse(ExprFrame4GraphAddBandSum.uni$Band%in%ADLoci,"ADLoci",ifelse(ExprFrame4GraphAddBandSum.uni$Chr%in%c(paste0("chr",seq(1,21,2))),"Single","Double"))
 
-t=ggplot(AllResult, aes(index, abs(CNVSum),fill=colorLabel,color=colorLabel,width=barWidth))+
-geom_bar(stat="identity")+
-scale_fill_manual(values = c("DarkOrange","DarkGray","LightGrey"))+
-scale_color_manual(values = c("DarkOrange","DarkGray","LightGrey"))+
-theme_bw()+ylim(0,6)+
-geom_label_repel(  data = AllResult[(AllResult$Band%in%ADLoci&abs(AllResult$CNVSum)>0.5),],
-                   aes(x = index, y = abs(CNVSum), label = Band),
-                   size = 5,
+     #ExprFrame4GraphAddBandSum$ADGene=ifelse(ExprFrame4GraphAddBandSum$Symbol%in%GWAS$Symbol,"ADRisk","NormalGene")
+     #ExprFrame4GraphAddBandSum=ExprFrame4GraphAddBandSum[order(ExprFrame4GraphAddBandSum$index),]
+     #write.table(ExprFrame4GraphAddBandSum,file="/data2/deng/Aging/Ex/AllEx/InferCNV/ADRiskPlot/ExprFrame4GraphAddBandSum.txt",sep="\t",quote=F,row.names=F)
+     
+     t=ggplot(ExprFrame4GraphAddBandSum.uni, aes(index, CNVSum,fill=colorLabel,color=colorLabel,width=barWidth))+
+       geom_bar(stat="identity")+
+       scale_fill_manual(values = c("DarkOrange","DarkGray","LightGrey"))+
+       scale_color_manual(values = c("DarkOrange","DarkGray","LightGrey"))+
+       theme_bw()+ 
+       ylim(-3,6)+
+       geom_label_repel(  data = ExprFrame4GraphAddBandSum.uni[(ExprFrame4GraphAddBandSum.uni$Band%in%ADLoci&abs(ExprFrame4GraphAddBandSum.uni$CNVSum)>0.5),],
+                   aes(x = index, y = CNVSum, label = Band),
+                   size = 2,
                    colour="black",
+                   max.overlaps=20,
                    force_pull   = 0, 
                    nudge_x = 0.5,
                    box.padding = 0.5,
@@ -287,12 +291,12 @@ geom_label_repel(  data = AllResult[(AllResult$Band%in%ADLoci&abs(AllResult$CNVS
                    segment.ncp = 3,
                    segment.angle = 90,
                    label.size=NA, #no border/box
-                   fill = "WhiteSmoke")+  #no background
-theme(axis.title.x=element_blank(),axis.title.y=element_blank(),axis.text.x = element_blank(),axis.text.y = element_text(size=rel(1.0),colour = "black"))
-tiff("ChrBandADLociInC3.tiff",width=1000,height=200)
-print(t)
-dev.off()
+                   fill = NA
+                   )+  #no background
+                   theme(axis.title.x=element_blank(),axis.title.y=element_blank(),axis.text.x = element_blank(),axis.text.y = element_text(size=rel(1.0),colour = "black"))
+     pdf(paste0("/data2/deng/Aging/Ex/AllEx/InferCNV/ADRiskPlot/ADRiskPlotFor_Cluster",targetCluster,"_",g,".pdf"),width=10,height=1.5)
+     print(t)
+     dev.off()
 
-
-
-
+  }
+}
