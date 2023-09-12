@@ -1,0 +1,240 @@
+Symbol	Author	Journal	LociNumber
+ADAMTS4	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+CR1	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+SPRED2	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+NCK2	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+BIN1	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+TMEM163	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+INPP5D	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+CLNK	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+HLA-DRB1	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+UNC5CL	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+CD2AP	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+SPATA48	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+PILRA	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+EPHA1	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+CLU	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+ECHDC3	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+CCDC6	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+TSPAN14	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+SPI1	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+MS4A6E	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+PICALM	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+SORL1	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+FERMT2	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+SLC24A4	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+SPPL2A	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+ADAM10	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+APH1B	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+KAT8	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+PLCG2	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+SCIMP	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+TSPOAP1	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+ACE	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+ABCA7	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+APOE	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+CD33	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+CASS4	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+ADAMTS1	Jeremy Schwartzentruber-2021	https://www.nature.com/articles/s41588-020-00776-w	Identified 37 risk loci
+ABCA1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+ADAM17	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+ANK3	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+ANKH	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+APP	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+BLNK	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+COX7C	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+CTSB	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+CTSH	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+DOC2A	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+FOXF1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+GRN	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+HS3ST5	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+ICA1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+IDUA	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+IGHG1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+IGHG3	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+JAZF1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+KLF16	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+LILRB2	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+MAF	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+MME	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+MYO15A	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+NCK2	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+PLEKHA1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+PRDM7	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+PRKD3	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+RASGEF1C	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+RBCK1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+RHOH	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+SEC61G	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+SHARPIN	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+SIGLEC11	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+SLC2A4RG	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+SNX1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+TMEM106B	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+TNIP1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+TPCN1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+TSPAN14	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+UMAD1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+WDR12	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+WDR81	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Identified 42 risk loci
+CR1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+BIN1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+INPP5D	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+CLNK	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+HLA-DQA1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+UNC5CL	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+TREM2	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+TREM2	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+TREML2	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+CD2AP	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+EPDR1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+SPDYE3	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+EPHA1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+PTK2B	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+CLU	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+USP6NL	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+SPI1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+MS4A4A	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+EED	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+SORL1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+SORL1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+FERMT2	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+SLC24A4	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+SLC24A4	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+SPPL2A	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+MINDY2	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+APH1B	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+BCKDK	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+IL34	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+PLCG2	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+PLCG2	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+SCIMP	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+WNT3	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+ABI3	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+TSPOAP1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+ACE	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+ABCA7	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+CASS4	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+ADAMTS1	Céline Bellenguez-2020	https://www.nature.com/articles/s41588-022-01024-z	Validated 39 known loci
+AGRN	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Identified 7 new
+TNIP1	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Identified 7 new
+HAVCR2	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Identified 7 new
+TMEM106B	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Identified 7 new
+GRN	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Identified 7 new
+NTN5	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Identified 7 new
+LILRB2	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Identified 7 new
+CR1	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+NCK2	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+BIN1	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+INPP5D	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+CLNK	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+HLA-DRB1	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+TREM2	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+CD2AP	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+ZCWPW1	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+NYAP1	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+EPHA1-AS1	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+CLU	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+SHARPIN	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+USP6NL	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+ECHDC3	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+CCDC6	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+MADD	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+SPI1	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+MS4A4A	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+PICALM	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+SORL1	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+FERMT2	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+RIN3	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+ADAM10	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+APH1B	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+SCIMP	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+RABEP1	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+ABI3	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+TSPOAP1-AS1	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+ACE	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+ABCA7	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+APOE	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+CD33	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+CASS4	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+APP	Douglas P. Wightman-2021	https://www.nature.com/articles/s41588-021-00921-z	Validated 31 known loci
+ADAMTS4	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+CR1	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+BIN1	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+INPP5D	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+HESX1	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+CLNK	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+HS3ST1	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+HLA-DRB1	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+TREM2	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+CD2AP	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+ZCWPW1	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+EPHA1	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+CNTNAP2	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+PTK2B	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+CLU	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+ECHDC3	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+MS4A6A	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+PICALM	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+SORL1	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+SLC24A4	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+ADAM10	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+APH1B	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+KAT8	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+SCIMP	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+ABI3	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+BZRAP1-AS1	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+SUZ12P1	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+ALPK2	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+ABCA7	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+APOE	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+AC074212.3	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+CD33	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+CASS4	Iris E. Jansen-2019	https://www.nature.com/articles/s41588-018-0311-9#Sec28	Identified 29 loci
+CR1	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+BIN1	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+INPP5D	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+HLA-DRB1	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+TREM2	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+CD2AP	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+NYAP1	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+EPHA1	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+PTK2B	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+CLU	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+SPI1	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+MS4A2	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+PICALM	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+SORL1	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+FERMT2	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+SLC24A4	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+ABCA7	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+APOE	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+CASS4	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Validated 18 loci
+ECHDC3	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Identified 4 loci
+ACE	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Identified 4 loci
+MEF2C	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Identified 4 loci
+NME8	Brian W. Kunkle-2019	https://www.nature.com/articles/s41588-019-0358-2	Identified 4 loci
+CR1	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+BIN1	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+CD2AP	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+EPHA1	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+CLU	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+MS4A6A	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+PICALM	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+ABCA7	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+CD33	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+HLA-DRB5	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+HLA-DRB1	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+PTK2B	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+SORL1	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+SLC24A4	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+RIN3	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+DSG2	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+INPP5D	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+MEF2C	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+NME8	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+ZCWPW1	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+CELF1	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+FERMT2	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
+CASS4	Jean-Charles Lambert-2013	https://www.nature.com/articles/ng.2802	Identified 14 loci
