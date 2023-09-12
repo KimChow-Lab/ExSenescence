@@ -14,7 +14,7 @@ C3C5Ratio$Ratio=C3C5Ratio$C3C5Number/C3C5Ratio$Total
 SampleAge=data.frame("Sample"=ExAll.integrated$orig.ident,"Age"=ExAll.integrated$Age,"Statues"=ExAll.integrated$Statues)
 SampleAge=unique(SampleAge)
 C3C5RatioAge=merge(C3C5Ratio,SampleAge,by="Sample")
-C3C5RatioAge=C3C5RatioAge[C3C5RatioAge$Age>69,]
+C3C5RatioAge=C3C5RatioAge[C3C5RatioAge$Age>59,]
 ClusterInfo=C3C5RatioAge
 dim(ClusterInfo[ClusterInfo$Ratio>0.4,]) #10 samples 1 C5, 9 C3
 ClusterInfo=ClusterInfo[ClusterInfo$Ratio<0.4,]
@@ -314,4 +314,3 @@ t=ggplot(ClusterInfo, aes(x=GroupList, y=Ratio, colour=GroupList)) +
 pdf("C3SubTypeRatioBetGroupPvalue.pdf",height=4,width=6)
 print(t)
 dev.off()
-
