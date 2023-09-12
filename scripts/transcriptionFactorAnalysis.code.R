@@ -1,4 +1,3 @@
-R
 library(Seurat)
 library(SeuratDisk)
 library(SeuratData)
