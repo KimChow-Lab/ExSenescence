@@ -1,1 +1,95 @@
+#download the sra file from SRA database: SRP282056
+cd /data2/deng/Aging/Ex/Lau_GSE157827/rawData
+#
+cat SraAccList.txt | while read id;do; /Softwares/deng/sratoolkit.2.10.0-centos_linux64/bin/prefetch ${id}; done 
+
+#convert from sra file to fastq file
+export PATH=/Softwares/deng/sratoolkit.2.10.0-centos_linux64/bin
+#https://kb.10xgenomics.com/hc/en-us/articles/115003802691-How-do-I-prepare-Sequence-Read-Archive-SRA-data-from-NCBI-for-Cell-Ranger-
+for sraFile in $(cat SraAccList.txt)
+do
+	echo $sraFile
+	/Softwares/deng/sratoolkit.2.10.0-centos_linux64/bin/fastq-dump --split-files --gzip $sraFile 
+done
+
+
+#randomly selected samples and rename fastq names
+mkdir GSM4775561
+mv SRR12623869_1.fastq.gz GSM4775561/SRR12623869_S1_L001_R1_001.fastq.gz
+mv SRR12623869_2.fastq.gz GSM4775561/SRR12623869_S1_L001_R2_001.fastq.gz
+mv SRR12623870_1.fastq.gz GSM4775561/SRR12623870_S1_L001_R1_001.fastq.gz
+mv SRR12623870_2.fastq.gz GSM4775561/SRR12623870_S1_L001_R2_001.fastq.gz
+mv SRR12623871_1.fastq.gz GSM4775561/SRR12623871_S1_L001_R1_001.fastq.gz
+mv SRR12623871_2.fastq.gz GSM4775561/SRR12623871_S1_L001_R2_001.fastq.gz
+mv SRR12623872_1.fastq.gz GSM4775561/SRR12623872_S1_L001_R1_001.fastq.gz
+mv SRR12623872_2.fastq.gz GSM4775561/SRR12623872_S1_L001_R2_001.fastq.gz
+mv SRR12623873_1.fastq.gz GSM4775561/SRR12623873_S1_L001_R1_001.fastq.gz
+mv SRR12623873_2.fastq.gz GSM4775561/SRR12623873_S1_L001_R2_001.fastq.gz
+mv SRR12623874_1.fastq.gz GSM4775561/SRR12623874_S1_L001_R1_001.fastq.gz
+mv SRR12623874_2.fastq.gz GSM4775561/SRR12623874_S1_L001_R2_001.fastq.gz
+mv SRR12623875_1.fastq.gz GSM4775561/SRR12623875_S1_L001_R1_001.fastq.gz
+mv SRR12623875_2.fastq.gz GSM4775561/SRR12623875_S1_L001_R2_001.fastq.gz
+mv SRR12623876_1.fastq.gz GSM4775561/SRR12623876_S1_L001_R1_001.fastq.gz
+mv SRR12623876_2.fastq.gz GSM4775561/SRR12623876_S1_L001_R2_001.fastq.gz
+
+
+mkdir GSM4775562
+mv SRR12623877_1.fastq.gz GSM4775562/SRR12623877_S1_L001_R1_001.fastq.gz
+mv SRR12623877_2.fastq.gz GSM4775562/SRR12623877_S1_L001_R2_001.fastq.gz
+mv SRR12623878_1.fastq.gz GSM4775562/SRR12623878_S1_L001_R1_001.fastq.gz
+mv SRR12623878_2.fastq.gz GSM4775562/SRR12623878_S1_L001_R2_001.fastq.gz
+mv SRR12623879_1.fastq.gz GSM4775562/SRR12623879_S1_L001_R1_001.fastq.gz
+mv SRR12623879_2.fastq.gz GSM4775562/SRR12623879_S1_L001_R2_001.fastq.gz
+mv SRR12623880_1.fastq.gz GSM4775562/SRR12623880_S1_L001_R1_001.fastq.gz
+mv SRR12623880_2.fastq.gz GSM4775562/SRR12623880_S1_L001_R2_001.fastq.gz
+
+
+mkdir GSM4775572
+mv SRR12623921_1.fastq.gz GSM4775572/SRR12623921_S1_L001_R1_001.fastq.gz
+mv SRR12623921_2.fastq.gz GSM4775572/SRR12623921_S1_L001_R2_001.fastq.gz
+mv SRR12623922_1.fastq.gz GSM4775572/SRR12623922_S1_L001_R1_001.fastq.gz
+mv SRR12623922_2.fastq.gz GSM4775572/SRR12623922_S1_L001_R2_001.fastq.gz
+mv SRR12623923_1.fastq.gz GSM4775572/SRR12623923_S1_L001_R1_001.fastq.gz
+mv SRR12623923_2.fastq.gz GSM4775572/SRR12623923_S1_L001_R2_001.fastq.gz
+mv SRR12623924_1.fastq.gz GSM4775572/SRR12623924_S1_L001_R1_001.fastq.gz
+mv SRR12623924_2.fastq.gz GSM4775572/SRR12623924_S1_L001_R2_001.fastq.gz
+
+
+mkdir GSM4775578
+mv SRR12623945_1.fastq.gz GSM4775578/SRR12623945_S1_L001_R1_001.fastq.gz
+mv SRR12623945_2.fastq.gz GSM4775578/SRR12623945_S1_L001_R2_001.fastq.gz
+mv SRR12623946_1.fastq.gz GSM4775578/SRR12623946_S1_L001_R1_001.fastq.gz
+mv SRR12623946_2.fastq.gz GSM4775578/SRR12623946_S1_L001_R2_001.fastq.gz
+mv SRR12623947_1.fastq.gz GSM4775578/SRR12623947_S1_L001_R1_001.fastq.gz
+mv SRR12623947_2.fastq.gz GSM4775578/SRR12623947_S1_L001_R2_001.fastq.gz
+mv SRR12623948_1.fastq.gz GSM4775578/SRR12623948_S1_L001_R1_001.fastq.gz
+mv SRR12623948_2.fastq.gz GSM4775578/SRR12623948_S1_L001_R2_001.fastq.gz
+
+
+mkdir GSM4775580
+
+
+mkdir GSM4775581
+mv SRR12623957_1.fastq.gz GSM4775581/SRR12623957_S1_L001_R1_001.fastq.gz
+mv SRR12623957_2.fastq.gz GSM4775581/SRR12623957_S1_L001_R2_001.fastq.gz
+mv SRR12623958_1.fastq.gz GSM4775581/SRR12623958_S1_L001_R1_001.fastq.gz
+mv SRR12623958_2.fastq.gz GSM4775581/SRR12623958_S1_L001_R2_001.fastq.gz
+mv SRR12623959_1.fastq.gz GSM4775581/SRR12623959_S1_L001_R1_001.fastq.gz
+mv SRR12623959_2.fastq.gz GSM4775581/SRR12623959_S1_L001_R2_001.fastq.gz
+mv SRR12623960_1.fastq.gz GSM4775581/SRR12623960_S1_L001_R1_001.fastq.gz
+mv SRR12623960_2.fastq.gz GSM4775581/SRR12623960_S1_L001_R2_001.fastq.gz
+
+
+
+
+
+#mapping use cellranger
+sample=GSM4775578
+cd /data2/deng/Aging/Ex/Lau_GSE157827/rawData/${sample}
+
+/Softwares/deng/CellRanger/cellranger-7.0.0/bin/cellranger count --id=${sample} \
+  --fastqs=/data2/deng/Aging/Ex/Lau_GSE157827/rawData/${sample} \
+  --sample=SRR12623945,SRR12623946,SRR12623947,SRR12623948 \
+  --transcriptome=/Softwares/deng/CellRanger/refdata-gex-GRCh38-2020-A/
+
 
