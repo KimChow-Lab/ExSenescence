@@ -1,7 +1,7 @@
 # ExSenescence
 Analysis codes and documentations for "Unmasking the heterogeneities in transcriptomic and evolutionary trajectories of cell cycle re-engaging post-mitotic neurons".     
 
-## Data and codes used to identify Senescence neurons 
+## codes used to identify senescence neurons
 |Script name|Comment| 
 |-----------|-------| 
 |[1.CellCycleScore.code.R](https://github.com/KimChow-Lab/ExSenescence/blob/main/SenescenceNeuronIdentification/1.CellCycleScore.code.R)|This script was used to quantify the cell cycle score accross the subtypes|
@@ -36,4 +36,3 @@ Analysis codes and documentations for "Unmasking the heterogeneities in transcri
 | Figure S21 | Supporting data for the analysis performed with the PD | [Metadata_Figure S17](https://github.com/KimChow-Lab/ExSenescence/blob/main/metaData/) | [Parkinson.DopamineSenescence.code.R](https://github.com/KimChow-Lab/ExSenescence/blob/main/scripts/Parkinson.DopamineSenescence.code.R)
 | Figure S22-23 | Application of the bioinformatics analytical pipeline in the mouse model of brain aging | [Metadata_Figure S22-23](https://github.com/KimChow-Lab/ExSenescence/blob/main/metaData/) | [Mouse_Allen_GSE207848.code.R](https://github.com/KimChow-Lab/ExSenescence/blob/main/scripts/Mouse_Allen_GSE207848.code.R)
 
-## codes used to identify senescence neurons
