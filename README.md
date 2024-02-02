@@ -1,7 +1,7 @@
 # ExSenescence
 Analysis codes and documentations for "Unmasking the heterogeneities in transcriptomic and evolutionary trajectories of cell cycle re-engaging post-mitotic neurons".     
 
-## codes used to identify senescence neurons
+## Codes used to identify senescence neurons
 |Script name|Comment| 
 |-----------|-------| 
 |[1.CellCycleScore.code.R](https://github.com/KimChow-Lab/ExSenescence/blob/main/SenescenceNeuronIdentification/1.CellCycleScore.code.R)|This script was used to quantify the cell cycle score accross the subtypes|
